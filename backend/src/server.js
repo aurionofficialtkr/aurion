@@ -61,11 +61,16 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('MongoDB Connected Successfully'))
-    .catch(err => {
-        console.error('MongoDB Connection Failed:', err);
-    });
+const mongoUri = process.env.MONGODB_URI;
+if (!mongoUri) {
+    console.error('CRITICAL: MONGODB_URI is missing. API will start, but database features will not work.');
+} else {
+    mongoose.connect(mongoUri)
+        .then(() => console.log('MongoDB Connected Successfully'))
+        .catch(err => {
+            console.error('MongoDB Connection Failed:', err);
+        });
+}
 
 const Registration = require('./models/Registration');
 
