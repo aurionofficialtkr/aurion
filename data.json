@@ -1,0 +1,16 @@
+{
+    "teamName": "TestTeam2",
+    "problemStatement": "Smart Agriculture",
+    "numberOfParticipants": 1,
+    "year": "3rd Year",
+    "department": "CSE",
+    "contactMobile": "9876543210",
+    "teamLeader": {
+        "name": "TestUser",
+        "email": "test2@example.com",
+        "rollNumber": "1234567",
+        "branch": "CSE",
+        "mobileNumber": "9876543210",
+        "isIEEEMember": false
+    }
+}

@@ -1,0 +1,635 @@
+<!-- admin-dashboard/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AURION 2K26</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#1e40af',
+                        dark: '#0f172a',
+                        accent: '#06b6d4'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .card-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table-row:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .status-pending {
+            color: #f59e0b;
+        }
+
+        .status-approved {
+            color: #10b981;
+        }
+
+        .status-rejected {
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body class="gradient-bg min-h-screen text-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                    AURION 2K26 Admin
+                </h1>
+                <p class="text-gray-400">Registration Management Dashboard</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="exportExcel"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Export Excel
+                </button>
+                <button id="logout"
+                    class="border border-gray-600 hover:border-red-500 text-gray-300 hover:text-red-400 px-4 py-2 rounded-lg">
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="card-glass rounded-xl p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-400 text-sm">Total Registrations</p>
+                        <p class="text-3xl font-bold mt-2" id="totalRegistrations">0</p>
+                    </div>
+                    <div class="p-3 bg-blue-500/20 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass rounded-xl p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-400 text-sm">Pending</p>
+                        <p class="text-3xl font-bold mt-2 status-pending" id="pendingCount">0</p>
+                    </div>
+                    <div class="p-3 bg-yellow-500/20 rounded-lg">
+                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass rounded-xl p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-400 text-sm">Approved</p>
+                        <p class="text-3xl font-bold mt-2 status-approved" id="approvedCount">0</p>
+                    </div>
+                    <div class="p-3 bg-green-500/20 rounded-lg">
+                        <svg class="w-6 h-6 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-glass rounded-xl p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-400 text-sm">IEEE Members</p>
+                        <p class="text-3xl font-bold mt-2" id="ieeeCount">0</p>
+                    </div>
+                    <div class="p-3 bg-purple-500/20 rounded-lg">
+                        <svg class="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card-glass rounded-xl p-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Search</label>
+                    <input type="text" id="searchInput" placeholder="Team name, email, ID..."
+                        class="input-glass w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Department</label>
+                    <select id="departmentFilter"
+                        class="input-glass w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        <option value="">All Departments</option>
+                        <option value="CSE">CSE</option>
+                        <option value="ECE">ECE</option>
+                        <option value="EEE">EEE</option>
+                        <option value="IT">IT</option>
+                        <option value="MECH">MECH</option>
+                        <option value="CIVIL">CIVIL</option>
+                        <option value="AIDS">AIDS</option>
+                        <option value="CSBS">CSBS</option>
+                        <option value="CSD">CSD</option>
+                        <option value="OTHERS">Others</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Year</label>
+                    <select id="yearFilter"
+                        class="input-glass w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        <option value="">All Years</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Status</label>
+                    <select id="statusFilter"
+                        class="input-glass w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">IEEE Member</label>
+                    <select id="ieeeFilter"
+                        class="input-glass w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        <option value="">All</option>
+                        <option value="true">IEEE Members</option>
+                        <option value="false">Non-IEEE</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-6">
+                <div class="text-sm text-gray-400">
+                    Showing <span id="showingCount">0</span> of <span id="totalCount">0</span> registrations
+                </div>
+                <div class="flex gap-4">
+                    <button id="applyFilters" class="bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-lg">
+                        Apply Filters
+                    </button>
+                    <button id="clearFilters"
+                        class="border border-gray-600 hover:border-gray-500 text-gray-300 px-6 py-2 rounded-lg">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registrations Table -->
+        <div class="card-glass rounded-xl p-6">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="text-left py-3 px-4">Reg ID</th>
+                            <th class="text-left py-3 px-4">Team</th>
+                            <th class="text-left py-3 px-4">Year/Dept</th>
+                            <th class="text-left py-3 px-4">Team Leader</th>
+                            <th class="text-left py-3 px-4">Members</th>
+                            <th class="text-left py-3 px-4">Status</th>
+                            <th class="text-left py-3 px-4">Date</th>
+                            <th class="text-left py-3 px-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registrationsTable">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-700">
+                <div class="text-sm text-gray-400">
+                    Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
+                </div>
+                <div class="flex gap-2">
+                    <button id="prevPage"
+                        class="border border-gray-600 hover:border-gray-500 text-gray-300 px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        Previous
+                    </button>
+                    <button id="nextPage"
+                        class="border border-gray-600 hover:border-gray-500 text-gray-300 px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Details Modal -->
+    <div id="detailsModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+        <div class="card-glass rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold" id="modalTitle">Registration Details</h3>
+                <button onclick="closeDetailsModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+
+            <div id="modalContent" class="space-y-6">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const backendUrl = 'http://localhost:5000/api';
+        const adminToken = localStorage.getItem('adminToken') || prompt('Enter admin token:');
+
+        let currentPage = 1;
+        const limit = 20;
+        let totalPages = 1;
+        let allRegistrations = [];
+
+        // Check authentication
+        if (!adminToken) {
+            alert('Authentication required');
+            window.location.href = '/admin-login.html';
+        }
+
+        // Set up headers for API calls
+        const headers = {
+            'Authorization': `Bearer ${adminToken}`,
+            'Content-Type': 'application/json'
+        };
+
+        // Load registrations
+        async function loadRegistrations(page = 1) {
+            try {
+                const params = new URLSearchParams({
+                    page: page.toString(),
+                    limit: limit.toString(),
+                    ...getFilters()
+                });
+
+                const response = await fetch(`${backendUrl}/admin/registrations?${params}`, { headers });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('adminToken');
+                    alert('Session expired. Please login again.');
+                    window.location.reload();
+                    return;
+                }
+
+                const data = await response.json();
+                allRegistrations = data.registrations;
+                totalPages = data.pagination.totalPages;
+
+                updateStats(data.registrations);
+                renderTable(data.registrations);
+                updatePagination(data.pagination);
+            } catch (error) {
+                console.error('Error loading registrations:', error);
+                alert('Failed to load registrations');
+            }
+        }
+
+        function getFilters() {
+            const filters = {};
+            const department = document.getElementById('departmentFilter').value;
+            const year = document.getElementById('yearFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const ieee = document.getElementById('ieeeFilter').value;
+            const search = document.getElementById('searchInput').value;
+
+            if (department) filters.department = department;
+            if (year) filters.year = year;
+            if (status) filters.status = status;
+            if (ieee) filters.ieeeMember = ieee;
+            if (search) filters.search = search;
+
+            return filters;
+        }
+
+        function updateStats(registrations) {
+            const total = registrations.length;
+            const pending = registrations.filter(r => r.status === 'pending').length;
+            const approved = registrations.filter(r => r.status === 'approved').length;
+            const ieeeCount = registrations.filter(r =>
+                r.teamLeader.isIEEEMember || (r.member2 && r.member2.isIEEEMember)
+            ).length;
+
+            document.getElementById('totalRegistrations').textContent = total;
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('ieeeCount').textContent = ieeeCount;
+            document.getElementById('showingCount').textContent = total;
+            document.getElementById('totalCount').textContent = total;
+        }
+
+        function renderTable(registrations) {
+            const tbody = document.getElementById('registrationsTable');
+            tbody.innerHTML = '';
+
+            if (registrations.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="py-8 text-center text-gray-400">
+                            No registrations found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            registrations.forEach(reg => {
+                const row = document.createElement('tr');
+                row.className = 'table-row border-b border-gray-800 hover:bg-blue-500/10';
+
+                const statusClass = `status-${reg.status}`;
+                const statusText = reg.status.charAt(0).toUpperCase() + reg.status.slice(1);
+                const date = new Date(reg.submissionDate).toLocaleDateString('en-IN');
+
+                row.innerHTML = `
+                    <td class="py-4 px-4">
+                        <span class="font-mono text-sm">${reg.registrationId}</span>
+                    </td>
+                    <td class="py-4 px-4">
+                        <div class="font-medium">${reg.teamName}</div>
+                        <div class="text-sm text-gray-400 truncate max-w-xs">${reg.problemStatement.substring(0, 50)}...</div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <div>${reg.year}</div>
+                        <div class="text-sm text-gray-400">${reg.department}</div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <div class="font-medium">${reg.teamLeader.name}</div>
+                        <div class="text-sm text-gray-400">${reg.teamLeader.email}</div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <div class="flex flex-col gap-1">
+                            <span class="inline-block px-2 py-1 text-xs bg-blue-900/50 rounded">
+                                ${reg.teamLeader.branch}
+                            </span>
+                            ${reg.member2 ? `
+                                <span class="inline-block px-2 py-1 text-xs bg-purple-900/50 rounded">
+                                    ${reg.member2.branch}
+                                </span>
+                            ` : ''}
+                        </div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <select class="status-select ${statusClass} bg-transparent border-none focus:outline-none focus:ring-0" 
+                                data-id="${reg._id}" onchange="updateStatus('${reg._id}', this.value)">
+                            <option value="pending" ${reg.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="approved" ${reg.status === 'approved' ? 'selected' : ''}>Approved</option>
+                            <option value="rejected" ${reg.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                        </select>
+                    </td>
+                    <td class="py-4 px-4 text-sm text-gray-400">
+                        ${date}
+                    </td>
+                    <td class="py-4 px-4">
+                        <div class="flex gap-2">
+                            <button onclick="viewDetails('${reg._id}')" 
+                                    class="text-cyan-400 hover:text-cyan-300 px-3 py-1 rounded text-sm">
+                                View
+                            </button>
+                        </div>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        function updatePagination(pagination) {
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages;
+
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+        }
+
+        async function updateStatus(id, status) {
+            try {
+                const response = await fetch(`${backendUrl}/admin/registrations/${id}/status`, {
+                    method: 'PATCH',
+                    headers,
+                    body: JSON.stringify({ status })
+                });
+
+                if (response.ok) {
+                    // Reload current page
+                    await loadRegistrations(currentPage);
+                } else {
+                    alert('Failed to update status');
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('Failed to update status');
+            }
+        }
+
+        async function viewDetails(id) {
+            const registration = allRegistrations.find(r => r._id === id);
+            if (!registration) return;
+
+            document.getElementById('modalTitle').textContent = `Registration: ${registration.registrationId}`;
+
+            const content = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Team Details -->
+                    <div class="bg-gray-900/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-cyan-400 mb-3">Team Information</h4>
+                        <div class="space-y-2 text-sm">
+                            <p><strong>Registration ID:</strong> ${registration.registrationId}</p>
+                            <p><strong>Team Name:</strong> ${registration.teamName}</p>
+                            <p><strong>Problem Statement:</strong> ${registration.problemStatement}</p>
+                            <p><strong>Participants:</strong> ${registration.numberOfParticipants}</p>
+                            <p><strong>Year:</strong> ${registration.year}</p>
+                            <p><strong>Department:</strong> ${registration.department}</p>
+                            <p><strong>Contact Mobile:</strong> ${registration.contactMobile}</p>
+                            <p><strong>Submission Date:</strong> ${new Date(registration.submissionDate).toLocaleString('en-IN')}</p>
+                            <p><strong>Status:</strong> <span class="status-${registration.status}">${registration.status.toUpperCase()}</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Team Leader -->
+                    <div class="bg-gray-900/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-cyan-400 mb-3">Team Leader</h4>
+                        <div class="space-y-2 text-sm">
+                            <p><strong>Name:</strong> ${registration.teamLeader.name}</p>
+                            <p><strong>Email:</strong> ${registration.teamLeader.email}</p>
+                            <p><strong>Roll Number:</strong> ${registration.teamLeader.rollNumber}</p>
+                            <p><strong>Branch:</strong> ${registration.teamLeader.branch}</p>
+                            <p><strong>Mobile:</strong> ${registration.teamLeader.mobileNumber}</p>
+                            <p><strong>IEEE Member:</strong> ${registration.teamLeader.isIEEEMember ? 'Yes' : 'No'}</p>
+                            ${registration.teamLeader.isIEEEMember ?
+                    `<p><strong>IEEE Number:</strong> ${registration.teamLeader.ieeeMembershipNumber}</p>` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Member 2 -->
+                    ${registration.member2 ? `
+                    <div class="md:col-span-2 bg-gray-900/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-cyan-400 mb-3">Member 2</h4>
+                        <div class="space-y-2 text-sm">
+                            <p><strong>Name:</strong> ${registration.member2.name}</p>
+                            <p><strong>Email:</strong> ${registration.member2.email}</p>
+                            <p><strong>Roll Number:</strong> ${registration.member2.rollNumber}</p>
+                            <p><strong>Branch:</strong> ${registration.member2.branch}</p>
+                            <p><strong>Mobile:</strong> ${registration.member2.mobileNumber}</p>
+                            <p><strong>IEEE Member:</strong> ${registration.member2.isIEEEMember ? 'Yes' : 'No'}</p>
+                            ${registration.member2.isIEEEMember ?
+                        `<p><strong>IEEE Number:</strong> ${registration.member2.ieeeMembershipNumber}</p>` : ''}
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Technical Details -->
+                    <div class="md:col-span-2 bg-gray-900/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-cyan-400 mb-3">Technical Details</h4>
+                        <div class="space-y-2 text-sm">
+                            <p><strong>IP Address:</strong> ${registration.ipAddress || 'N/A'}</p>
+                            <p><strong>User Agent:</strong> <span class="text-xs">${registration.userAgent || 'N/A'}</span></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('detailsModal').classList.remove('hidden');
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+        }
+
+        async function exportExcel() {
+            try {
+                const response = await fetch(`${backendUrl}/admin/export/excel`, { headers });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `aurion_registrations_${new Date().toISOString().split('T')[0]}.xlsx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    alert('Failed to export Excel file');
+                }
+            } catch (error) {
+                console.error('Error exporting Excel:', error);
+                alert('Failed to export Excel file');
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            if (adminToken) {
+                localStorage.setItem('adminToken', adminToken);
+                loadRegistrations();
+            }
+
+            // Filter controls
+            document.getElementById('applyFilters').addEventListener('click', () => {
+                currentPage = 1;
+                loadRegistrations();
+            });
+
+            document.getElementById('clearFilters').addEventListener('click', () => {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('departmentFilter').value = '';
+                document.getElementById('yearFilter').value = '';
+                document.getElementById('statusFilter').value = '';
+                document.getElementById('ieeeFilter').value = '';
+                currentPage = 1;
+                loadRegistrations();
+            });
+
+            // Search on enter
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    currentPage = 1;
+                    loadRegistrations();
+                }
+            });
+
+            // Pagination
+            document.getElementById('prevPage').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadRegistrations(currentPage);
+                }
+            });
+
+            document.getElementById('nextPage').addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadRegistrations(currentPage);
+                }
+            });
+
+            // Export Excel
+            document.getElementById('exportExcel').addEventListener('click', exportExcel);
+
+            // Logout
+            document.getElementById('logout').addEventListener('click', () => {
+                localStorage.removeItem('adminToken');
+                window.location.reload();
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:5000...
+* Established connection to localhost (::1 port 5000) from ::1 port 57916 
+* using HTTP/1.x
+> GET /api/admin/registrations HTTP/1.1
+
+> Host: localhost:5000
+
+> User-Agent: curl/8.16.0
+
+> Accept: */*
+
+> Authorization: Basic MjNLOTFBMDQwMzo3OTk3Njg0MTA3
+
+> 
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Request completely sent off
+< HTTP/1.1 200 OK
+
+< Content-Security-Policy: default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests
+
+< Cross-Origin-Opener-Policy: same-origin
+
+< Cross-Origin-Resource-Policy: same-origin
+
+< Origin-Agent-Cluster: ?1
+
+< Referrer-Policy: no-referrer
+
+< Strict-Transport-Security: max-age=15552000; includeSubDomains
+
+< X-Content-Type-Options: nosniff
+
+< X-DNS-Prefetch-Control: off
+
+< X-Download-Options: noopen
+
+< X-Frame-Options: SAMEORIGIN
+
+< X-Permitted-Cross-Domain-Policies: none
+
+< X-XSS-Protection: 0
+
+< Access-Control-Allow-Origin: *
+
+< X-RateLimit-Limit: 100
+
+< X-RateLimit-Remaining: 98
+
+< Date: Sun, 08 Feb 2026 07:17:55 GMT
+
+< X-RateLimit-Reset: 1770535658
+
+< Content-Type: application/json; charset=utf-8
+
+< Content-Length: 69
+
+< ETag: W/"45-tKr9WIbJ1fNK8fiG/3NhvDfIyv4"
+
+< Connection: keep-alive
+
+< Keep-Alive: timeout=5
+
+< 
+
+{ [69 bytes data]
+
+100    69  100    69    0     0   6846      0 --:--:-- --:--:-- --:--:--  6900
+* Connection #0 to host localhost:5000 left intact
+{"registrations":[],"pagination":{"total":0,"page":1,"totalPages":0}}

@@ -1,0 +1,9 @@
+backend/node_modules/
+backend/.env
+backend/run.log
+backend/uploads/
+backend/data/backups/
+
+.codex-backups/
+.DS_Store
+Thumbs.db

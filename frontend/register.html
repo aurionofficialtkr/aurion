@@ -1,0 +1,1625 @@
+﻿<!-- frontend/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - AURION 2K26</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="image" href="img/home-bg-aurion.jpeg" media="(min-width: 769px)">
+    <link rel="preload" as="image" href="img/home-bg-aurion-mobile.jpeg" media="(max-width: 768px)">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#FFD700',
+                        'gold-light': '#FDB931',
+                        'deep-blue': '#050A18',
+                        'cosmic-purple': '#2E1065',
+                        'nebula-blue': '#1e3a8a',
+                        primary: '#FFD700', // Gold primarily
+                        secondary: '#1e40af',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Cinzel', 'serif']
+                    },
+                    backgroundImage: {
+                        'cosmic-gradient': 'radial-gradient(circle at center, #1e3a8a 0%, #0f172a 40%, #050A18 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="min-h-screen home-page">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Top Header Area -->
+        <header class="text-center mb-6 relative pt-4">
+            <!-- College Branding & Logos -->
+            <div class="flex flex-col items-center gap-2 mb-4 pt-4">
+                <!-- Logos Row -->
+                <div class="flex justify-center items-center gap-6 mb-2 w-full max-w-4xl px-4 float-soft">
+                    <!-- Left Logo (IEEE/College Placeholder) -->
+                    <div
+                        class="w-16 h-16 md:w-20 md:h-20 bg-white/10 backdrop-blur-md rounded-full border border-gold/30 flex items-center justify-center p-2 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+                        <img src="img/tkr-logo.jpeg" alt="TKR College"
+                            class="w-full h-full object-contain rounded-full bg-white p-1"
+                            onerror="this.style.display='none';">
+                    </div>
+
+                    <!-- Center Title Group -->
+                    <div class="flex-1 text-center">
+                        <h2
+                            class="text-gold font-display font-bold text-lg md:text-2xl tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                            AURION
+                        </h2>
+                        <p class="text-blue-200 text-[10px] md:text-xs font-medium tracking-[0.2em] uppercase">
+                            Project Expo 2K26
+                        </p>
+                    </div>
+
+                    <!-- Right Logo (TKR/Event Placeholder) -->
+                    <div
+                        class="w-16 h-16 md:w-20 md:h-20 bg-white/10 backdrop-blur-md rounded-full border border-gold/30 flex items-center justify-center p-2 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+                        <img src="img/ieee-logo.jpeg" alt="IEEE Hyderabad"
+                            class="w-full h-full object-contain rounded-full bg-white p-1"
+                            onerror="this.style.display='none';">
+                    </div>
+                </div>
+
+                <!-- Main College Title -->
+                <h1 class="text-xl md:text-3xl font-display font-bold text-white tracking-wide text-shadow-lg px-2">
+                    TKR COLLEGE OF ENGINEERING AND TECHNOLOGY
+                </h1>
+                <p class="text-blue-300 text-xs md:text-sm font-light tracking-wide max-w-2xl px-4">
+                    Hardware Project Expo Organised by EEE & ECE Departments
+                    <span class="block text-gold text-xs mt-1 font-semibold">In association with IEEE</span>
+                </p>
+            </div>
+        </header>
+
+        <!-- Navigation Bar (Glassmorphism) -->
+        <!-- Navigation Bar (Glassmorphism) -->
+        <nav class="sticky top-4 z-50 mb-10">
+            <div
+                class="card-glass rounded-full max-w-xs mx-auto px-2 py-2 border-gold/30 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+                <ul class="flex items-center justify-center">
+                    <li>
+                        <a href="index.html"
+                            class="px-6 py-2 rounded-full text-sm font-semibold text-white hover:bg-gold hover:text-black transition-all duration-300 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            <span>Back to Home</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Progress Indicator (Simplified) -->
+        <div class="max-w-4xl mx-auto mb-10">
+            <div class="flex justify-between items-center relative px-8">
+                <div class="absolute top-1/2 left-0 right-0 h-1 bg-blue-900/50 -translate-y-1/2 rounded-full"></div>
+                <div id="progressBar"
+                    class="absolute top-1/2 left-0 h-1 bg-gold -translate-y-1/2 transition-all duration-500 rounded-full shadow-[0_0_10px_#FFD700]"
+                    style="width: 0%"></div>
+
+                <div class="relative z-10 flex flex-col items-center step-indicator" data-step="1">
+                    <div
+                        class="w-10 h-10 rounded-full bg-gold text-black flex items-center justify-center font-bold border-4 border-[#050A18] shadow-lg transition-all duration-300">
+                        1</div>
+                    <span class="mt-2 text-xs text-gold font-medium uppercase tracking-wider">Team</span>
+                </div>
+                <div class="relative z-10 flex flex-col items-center step-indicator" data-step="2">
+                    <div
+                        class="w-10 h-10 rounded-full bg-gray-800 text-gray-500 flex items-center justify-center font-bold border-4 border-[#050A18] shadow-lg transition-all duration-300">
+                        2</div>
+                    <span class="mt-2 text-xs text-gray-500 font-medium uppercase tracking-wider">Members</span>
+                </div>
+                <div class="relative z-10 flex flex-col items-center step-indicator" data-step="3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-gray-800 text-gray-500 flex items-center justify-center font-bold border-4 border-[#050A18] shadow-lg transition-all duration-300">
+                        3</div>
+                    <span class="mt-2 text-xs text-gray-500 font-medium uppercase tracking-wider">Confirm</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div id="registrationSection" class="max-w-5xl mx-auto scroll-mt-32">
+            <form id="registrationForm" class="relative min-h-[500px]" novalidate>
+                <div id="formStatus" class="status-banner mb-5" role="status" aria-live="polite"></div>
+
+                <!-- Step 1: Team Details -->
+                <div id="step1" class="step-transition absolute inset-0 opacity-100 z-10">
+                    <div class="card-glass rounded-2xl p-8 border-t border-gold/20">
+                        <h3 class="text-2xl font-display font-bold text-gold mb-8 flex items-center gap-3">
+                            <span class="w-8 h-1 bg-gold rounded-full"></span>
+                            Team Information
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-blue-200 mb-2 uppercase tracking-wide">Team
+                                        Name *</label>
+                                    <input type="text" id="teamNameInput" name="teamName" required
+                                        class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all placeholder-gray-500"
+                                        placeholder="Enter your team name">
+                                    <p class="field-hint">Use a short, unique team name that can be announced on stage.</p>
+                                    <p id="teamNameAvailability" class="field-hint" aria-live="polite"></p>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-blue-200 mb-2 uppercase tracking-wide">Department
+                                        *</label>
+                                    <select name="department" required
+                                        class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all cursor-pointer">
+                                        <option value="" class="bg-gray-900">Select Department</option>
+                                        <option value="CSE" class="bg-gray-900">CSE</option>
+                                        <option value="ECE" class="bg-gray-900">ECE</option>
+                                        <option value="EEE" class="bg-gray-900">EEE</option>
+                                        <option value="IT" class="bg-gray-900">IT</option>
+                                        <option value="MECH" class="bg-gray-900">MECH</option>
+                                        <option value="CIVIL" class="bg-gray-900">CIVIL</option>
+                                        <option value="AIDS" class="bg-gray-900">AIDS</option>
+                                        <option value="CSBS" class="bg-gray-900">CSBS</option>
+                                        <option value="CSD" class="bg-gray-900">CSD</option>
+                                        <option value="OTHERS" class="bg-gray-900">Others</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-blue-200 mb-2 uppercase tracking-wide">College
+                                        Name *</label>
+                                    <input type="text" name="collegeName" required
+                                        class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all placeholder-gray-500"
+                                        placeholder="Enter your college name">
+                                    <p class="field-hint">Use official college name as per your student ID.</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-blue-200 mb-2 uppercase tracking-wide">Participants
+                                        *</label>
+                                    <select name="numberOfParticipants" required
+                                        class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all cursor-pointer"
+                                        onchange="toggleMember2Fields()">
+                                        <option value="" class="bg-gray-900">Select Count</option>
+                                        <option value="1" class="bg-gray-900">1 (Solo)</option>
+                                        <option value="2" class="bg-gray-900">2 (Team)</option>
+                                        <option value="3" class="bg-gray-900">3 (Team)</option>
+                                    </select>
+                                    <p class="field-hint">Select exactly how many members will participate.</p>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-blue-200 mb-2 uppercase tracking-wide">Year
+                                        *</label>
+                                    <select name="year" required
+                                        class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all cursor-pointer">
+                                        <option value="" class="bg-gray-900">Select Year</option>
+                                        <option value="1st Year" class="bg-gray-900">1st Year</option>
+                                        <option value="2nd Year" class="bg-gray-900">2nd Year</option>
+                                        <option value="3rd Year" class="bg-gray-900">3rd Year</option>
+                                        <option value="4th Year" class="bg-gray-900">4th Year</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="md:col-span-2 space-y-6">
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-blue-200 mb-2 uppercase tracking-wide">Problem
+                                        Statement *</label>
+                                    <select id="problemStatement" name="problemStatement" required onchange="toggleCustomProblemStatement()"
+                                        class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all cursor-pointer">
+                                                                                <option value="" class="bg-gray-900">Select Problem Statement</option>
+                                        <option value="Development of indigenous contactless Integrated Track Monitoring Systems (ITMS) for Track Recording on Indian Railways" class="bg-gray-900">Development of indigenous contactless Integrated Track Monitoring Systems (ITMS) for Track Recording on Indian Railways</option>
+                                        <option value="AI based development of Laser based QR Code marking on &#39;track fittings on Indian Railways&#39;." class="bg-gray-900">AI based development of Laser based QR Code marking on &#39;track fittings on Indian Railways&#39;.</option>
+                                        <option value="Development of Sensor for Detection Of Microplastics" class="bg-gray-900">Development of Sensor for Detection Of Microplastics</option>
+                                        <option value="Embedded Intelligent Microscopy System for Identification and Counting of Microscopic Marine Organisms" class="bg-gray-900">Embedded Intelligent Microscopy System for Identification and Counting of Microscopic Marine Organisms</option>
+                                        <option value="Disaster Response Drone for Remote Areas" class="bg-gray-900">Disaster Response Drone for Remote Areas</option>
+                                        <option value="Renewable Energy Monitoring System for Microgrids" class="bg-gray-900">Renewable Energy Monitoring System for Microgrids</option>
+                                        <option value="Automated High-Current Short-Circuit Test System for MCB to comply with IEC 60898-1:2015" class="bg-gray-900">Automated High-Current Short-Circuit Test System for MCB to comply with IEC 60898-1:2015</option>
+                                        <option value="Automated Specimen Preparation System for testing of Cable samples as per IS 10810 and IS 7098." class="bg-gray-900">Automated Specimen Preparation System for testing of Cable samples as per IS 10810 and IS 7098.</option>
+                                        <option value="Detection and Prevention of Tampering in Weighing and Measuring instruments" class="bg-gray-900">Detection and Prevention of Tampering in Weighing and Measuring instruments</option>
+                                        <option value="Developing a cost effective solution for detecting the breakage of Low Voltage AC Distribution Over Head conductors" class="bg-gray-900">Developing a cost effective solution for detecting the breakage of Low Voltage AC Distribution Over Head conductors</option>
+                                        <option value="Improving the Renewable Energy hosting capacity in Distribution Feeders improving the Power quality of Distribution network during high RE injection" class="bg-gray-900">Improving the Renewable Energy hosting capacity in Distribution Feeders improving the Power quality of Distribution network during high RE injection</option>
+                                        <option value="A hardware that can detect and prevent unauthorized use of electric fences" class="bg-gray-900">A hardware that can detect and prevent unauthorized use of electric fences</option>
+                                        <option value="Blockchain &amp; Cybersecurity" class="bg-gray-900">Blockchain &amp; Cybersecurity</option>
+                                        <option value="Clean &amp; Green Technology" class="bg-gray-900">Clean &amp; Green Technology</option>
+                                        <option value="Renewable &amp; Sustainable Energy" class="bg-gray-900">Renewable &amp; Sustainable Energy</option>
+                                        <option value="Robotics and Drones" class="bg-gray-900">Robotics and Drones</option>
+                                        <option value="Smart Automation" class="bg-gray-900">Smart Automation</option>
+                                        <option value="Smart Vehicles" class="bg-gray-900">Smart Vehicles</option>
+                                        <option value="Space Technology" class="bg-gray-900">Space Technology</option>
+                                        <option value="AI and IoT Powered Intelligent System for Real Time Elephant Movement Detection and Prevention of Human-Elephant Conflict (HEC) in Chhattisgarh State" class="bg-gray-900">AI and IoT Powered Intelligent System for Real Time Elephant Movement Detection and Prevention of Human-Elephant Conflict (HEC) in Chhattisgarh State</option>
+                                        <option value="Smart PPE Compliance Monitoring and Reporting System for Underground Coal Mines" class="bg-gray-900">Smart PPE Compliance Monitoring and Reporting System for Underground Coal Mines</option>
+                                        <option value="Surveillance during extreme weather condition" class="bg-gray-900">Surveillance during extreme weather condition</option>
+                                        <option value="Robotic Floating Hyperspectral Radiometer Platform for Monitoring Chlorophyll and Plastic Pollution in Aquatic Environments" class="bg-gray-900">Robotic Floating Hyperspectral Radiometer Platform for Monitoring Chlorophyll and Plastic Pollution in Aquatic Environments</option>
+                                        <option value="Integrated Wearable Device for Real-Time Monitoring of Vital Parameters, Gas Exposure, and Fatigue" class="bg-gray-900">Integrated Wearable Device for Real-Time Monitoring of Vital Parameters, Gas Exposure, and Fatigue</option>
+                                        <option value="Development of Radar-Based Living Person Detection System for Use Under the Rubble" class="bg-gray-900">Development of Radar-Based Living Person Detection System for Use Under the Rubble</option>
+                                        <option value="Low-Cost Decentralized Smart Air Purification &amp; Monitoring System for Delhi-NCR" class="bg-gray-900">Low-Cost Decentralized Smart Air Purification &amp; Monitoring System for Delhi-NCR</option>
+                                        <option value="Cognitive Opportunistic LEO-PNT Receiver System" class="bg-gray-900">Cognitive Opportunistic LEO-PNT Receiver System</option>
+                                        <option value="Rare-Earth-Free High-Efficiency Motors" class="bg-gray-900">Rare-Earth-Free High-Efficiency Motors</option>
+                                        <option value="Cloudburst Early Warning and Alarm System" class="bg-gray-900">Cloudburst Early Warning and Alarm System</option>
+                                        <option value="Sign Language Capture and Illustration System with Sensor Integration" class="bg-gray-900">Sign Language Capture and Illustration System with Sensor Integration</option>
+                                        <option value="Development of a floating sensor based system for automatic reading and transmission of water levels in the rivers." class="bg-gray-900">Development of a floating sensor based system for automatic reading and transmission of water levels in the rivers.</option>
+                                        <option value="Namami Gange Smart River Water Quality Surveillance Sampling System with UAVs" class="bg-gray-900">Namami Gange Smart River Water Quality Surveillance Sampling System with UAVs</option>
+                                        <option value="Hand held Radio set having Satellite Personal Tracking System." class="bg-gray-900">Hand held Radio set having Satellite Personal Tracking System.</option>
+                                        <option value="Portable Indigenous Anti Drone Solution to counter threats from enemy aerial objects" class="bg-gray-900">Portable Indigenous Anti Drone Solution to counter threats from enemy aerial objects</option>
+                                        <option value="AI-Based Predictive Fault Detection for Distribution Transformers Using Edge Analytics" class="bg-gray-900">AI-Based Predictive Fault Detection for Distribution Transformers Using Edge Analytics</option>
+                                        <option value="IoT-Based Smart Energy Meter with Non-Intrusive Appliance Load Monitoring" class="bg-gray-900">IoT-Based Smart Energy Meter with Non-Intrusive Appliance Load Monitoring</option>
+                                        <option value="Grid-Interactive Solar Inverter with Dynamic Voltage and Frequency Support" class="bg-gray-900">Grid-Interactive Solar Inverter with Dynamic Voltage and Frequency Support</option>
+                                        <option value="Portable Power Quality Analyzer for Harmonics, Sag, and Flicker Detection" class="bg-gray-900">Portable Power Quality Analyzer for Harmonics, Sag, and Flicker Detection</option>
+                                        <option value="Low-Cost EV Fast Charging Scheduler for Campus Microgrids" class="bg-gray-900">Low-Cost EV Fast Charging Scheduler for Campus Microgrids</option>
+                                        <option value="Adaptive Relaying Scheme for Renewable-Rich Distribution Networks" class="bg-gray-900">Adaptive Relaying Scheme for Renewable-Rich Distribution Networks</option>
+                                        <option value="Smart Battery Management System for Lithium Packs with Thermal Runaway Early Warning" class="bg-gray-900">Smart Battery Management System for Lithium Packs with Thermal Runaway Early Warning</option>
+                                        <option value="AI-Enabled Motor Health Monitoring using Vibration and Current Signature Analysis" class="bg-gray-900">AI-Enabled Motor Health Monitoring using Vibration and Current Signature Analysis</option>
+                                        <option value="LoRa-Based Smart Street Lighting with Adaptive Dimming and Fault Localization" class="bg-gray-900">LoRa-Based Smart Street Lighting with Adaptive Dimming and Fault Localization</option>
+                                        <option value="Autonomous Inspection Robot for Cable Trenches and Utility Tunnels" class="bg-gray-900">Autonomous Inspection Robot for Cable Trenches and Utility Tunnels</option>
+                                        <option value="Vision-Guided Robotic Arm for PCB Component Sorting and Defect Rejection" class="bg-gray-900">Vision-Guided Robotic Arm for PCB Component Sorting and Defect Rejection</option>
+                                        <option value="Multi-Robot Swarm for Warehouse Inventory Mapping using UWB and LiDAR" class="bg-gray-900">Multi-Robot Swarm for Warehouse Inventory Mapping using UWB and LiDAR</option>
+                                        <option value="FPGA-Based Real-Time Object Detection Unit for UAV Navigation" class="bg-gray-900">FPGA-Based Real-Time Object Detection Unit for UAV Navigation</option>
+                                        <option value="Self-Healing DC Microgrid Controller for Critical Campus Loads" class="bg-gray-900">Self-Healing DC Microgrid Controller for Critical Campus Loads</option>
+                                        <option value="Contactless Radar-Based Vital Sign Monitoring for Remote Health Screening" class="bg-gray-900">Contactless Radar-Based Vital Sign Monitoring for Remote Health Screening</option>
+                                        <option value="__custom__" class="bg-gray-900">Not in list - Enter custom problem statement</option>
+                                    </select>
+                                    <div id="customProblemStatementWrap" class="hidden mt-4">
+                                        <label
+                                            class="block text-sm font-medium text-blue-200 mb-2 uppercase tracking-wide">Custom
+                                            Problem Statement *</label>
+                                        <input type="text" name="customProblemStatement"
+                                            class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all placeholder-gray-500"
+                                            placeholder="Enter your project problem statement">
+                                    </div>
+                                    <p class="field-hint">If your topic is not listed, choose the custom option at the bottom.</p>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-blue-200 mb-2 uppercase tracking-wide">Contact
+                                        Mobile Number *</label>
+                                    <input type="tel" name="contactMobile" required pattern="[6-9][0-9]{9}"
+                                        class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all placeholder-gray-500"
+                                        placeholder="Enter contact mobile number">
+                                    <p class="field-hint">Use a working 10-digit number for updates and shortlist calls.</p>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-blue-200 mb-2 uppercase tracking-wide">Project
+                                        File (PDF/PPT/PPTX) *</label>
+                                    <input type="file" id="projectFileInput" name="projectFile" required accept=".pdf,.ppt,.pptx"
+                                        onchange="handleProjectFileChange(event)"
+                                        class="input-glass w-full px-4 py-3 rounded-xl focus:outline-none transition-all file:mr-4 file:rounded-lg file:border-0 file:bg-gold file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black hover:file:bg-yellow-400">
+                                    <p id="projectFileMeta" class="field-hint">Accepted: PDF, PPT, PPTX. Max file size: 10 MB.</p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="mt-10 flex justify-end">
+                            <button type="button" onclick="nextStep(2)"
+                                class="btn-primary px-10 py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto">
+                                Next Step
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Member Details (Combined) -->
+                <div id="step2"
+                    class="step-transition absolute inset-0 opacity-0 pointer-events-none z-0 translate-x-full">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 items-start">
+
+                        <!-- Member 1 Card -->
+                        <div class="card-glass rounded-2xl p-4 sm:p-6 border-t border-gold/20 w-full min-w-0">
+                            <h3 class="text-lg sm:text-xl font-display font-bold text-gold mb-5 sm:mb-6 flex items-center gap-3">
+                                <span
+                                    class="bg-gold text-black rounded-full w-6 h-6 flex items-center justify-center text-sm">1</span>
+                                Team Leader
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-blue-300 uppercase mb-1">Full Name
+                                        *</label>
+                                    <input type="text" name="teamLeader[name]" required
+                                        class="input-glass w-full px-4 py-2 rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-blue-300 uppercase mb-1">Roll Number
+                                        *</label>
+                                    <input type="text" name="teamLeader[rollNumber]" required
+                                        class="input-glass w-full px-4 py-2 rounded-lg uppercase">
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-blue-300 uppercase mb-1">Branch
+                                            *</label>
+                                        <select name="teamLeader[branch]" required
+                                            class="input-glass w-full px-4 py-2 rounded-lg">
+                                            <option value="" class="bg-gray-900">Select</option>
+                                            <option value="ECE" class="bg-gray-900">ECE</option>
+                                            <option value="CSE" class="bg-gray-900">CSE</option>
+                                            <option value="EEE" class="bg-gray-900">EEE</option>
+                                            <!-- Add others as needed -->
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-blue-300 uppercase mb-1">Mobile
+                                            *</label>
+                                        <input type="tel" name="teamLeader[mobileNumber]" required
+                                            pattern="[6-9][0-9]{9}" class="input-glass w-full px-4 py-2 rounded-lg">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-blue-300 uppercase mb-1">Email
+                                        *</label>
+                                    <input type="email" name="teamLeader[email]" required
+                                        class="input-glass w-full px-4 py-2 rounded-lg">
+                                </div>
+                                <div class="bg-blue-900/20 p-3 rounded-lg border border-blue-800">
+                                    <label class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 cursor-pointer">
+                                        <span class="text-sm text-blue-200">IEEE Member?</span>
+                                        <div class="flex items-center flex-wrap gap-3">
+                                            <label class="inline-flex items-center"><input type="radio"
+                                                    name="teamLeader[isIEEEMember]" value="true"
+                                                    class="form-radio text-gold focus:ring-gold"
+                                                    onchange="toggleIEEEField('teamLeader')"><span
+                                                    class="ml-2 text-xs sm:text-sm">Yes</span></label>
+                                            <label class="inline-flex items-center"><input type="radio"
+                                                    name="teamLeader[isIEEEMember]" value="false"
+                                                    class="form-radio text-gold focus:ring-gold" checked
+                                                    onchange="toggleIEEEField('teamLeader')"><span
+                                                    class="ml-2 text-xs sm:text-sm">No</span></label>
+                                        </div>
+                                    </label>
+                                    <div id="teamLeaderIEEE" class="hidden mt-3">
+                                        <input type="text" name="teamLeader[ieeeMembershipNumber]"
+                                            placeholder="Membership ID"
+                                            class="input-glass w-full px-4 py-2 rounded-lg text-sm">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Member 2 Card -->
+                        <div id="member2Card"
+                            class="card-glass rounded-2xl p-4 sm:p-6 border-t border-gold/20 hidden lg:block opacity-50 pointer-events-none transition-all duration-300 w-full min-w-0">
+                            <h3 class="text-lg sm:text-xl font-display font-bold text-gray-400 mb-5 sm:mb-6 flex items-center gap-3">
+                                <span
+                                    class="bg-gray-600 text-black rounded-full w-6 h-6 flex items-center justify-center text-sm">2</span>
+                                Member 2
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Full Name
+                                        *</label>
+                                    <input type="text" name="member2[name]"
+                                        class="input-glass w-full px-4 py-2 rounded-lg" disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Roll Number
+                                        *</label>
+                                    <input type="text" name="member2[rollNumber]"
+                                        class="input-glass w-full px-4 py-2 rounded-lg uppercase" disabled>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Branch
+                                            *</label>
+                                        <select name="member2[branch]" class="input-glass w-full px-4 py-2 rounded-lg"
+                                            disabled>
+                                            <option value="" class="bg-gray-900">Select</option>
+                                            <option value="ECE" class="bg-gray-900">ECE</option>
+                                            <option value="CSE" class="bg-gray-900">CSE</option>
+                                            <!-- Add others as needed -->
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Mobile
+                                            *</label>
+                                        <input type="tel" name="member2[mobileNumber]" pattern="[6-9][0-9]{9}"
+                                            class="input-glass w-full px-4 py-2 rounded-lg" disabled>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Email
+                                        *</label>
+                                    <input type="email" name="member2[email]"
+                                        class="input-glass w-full px-4 py-2 rounded-lg" disabled>
+                                </div>
+                                <div class="bg-blue-900/20 p-3 rounded-lg border border-blue-800">
+                                    <label class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 cursor-pointer">
+                                        <span class="text-sm text-gray-400">IEEE Member?</span>
+                                        <div class="flex items-center flex-wrap gap-3">
+                                            <label class="inline-flex items-center"><input type="radio"
+                                                    name="member2[isIEEEMember]" value="true"
+                                                    class="form-radio text-gray-500" disabled
+                                                    onchange="toggleIEEEField('member2')"><span
+                                                    class="ml-2 text-xs sm:text-sm text-gray-500">Yes</span></label>
+                                            <label class="inline-flex items-center"><input type="radio"
+                                                    name="member2[isIEEEMember]" value="false"
+                                                    class="form-radio text-gray-500" checked disabled
+                                                    onchange="toggleIEEEField('member2')"><span
+                                                    class="ml-2 text-xs sm:text-sm text-gray-500">No</span></label>
+                                        </div>
+                                    </label>
+                                    <div id="member2IEEE" class="hidden mt-3">
+                                        <input type="text" name="member2[ieeeMembershipNumber]"
+                                            placeholder="Membership ID"
+                                            class="input-glass w-full px-4 py-2 rounded-lg text-sm" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Member 3 Card -->
+                        <div id="member3Card"
+                            class="card-glass rounded-2xl p-4 sm:p-6 border-t border-gold/20 hidden lg:block opacity-50 pointer-events-none transition-all duration-300 w-full min-w-0">
+                            <h3 class="text-lg sm:text-xl font-display font-bold text-gray-400 mb-5 sm:mb-6 flex items-center gap-3">
+                                <span
+                                    class="bg-gray-600 text-black rounded-full w-6 h-6 flex items-center justify-center text-sm">3</span>
+                                Member 3
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Full Name
+                                        *</label>
+                                    <input type="text" name="member3[name]"
+                                        class="input-glass w-full px-4 py-2 rounded-lg" disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Roll Number
+                                        *</label>
+                                    <input type="text" name="member3[rollNumber]"
+                                        class="input-glass w-full px-4 py-2 rounded-lg uppercase" disabled>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Branch
+                                            *</label>
+                                        <select name="member3[branch]" class="input-glass w-full px-4 py-2 rounded-lg"
+                                            disabled>
+                                            <option value="" class="bg-gray-900">Select</option>
+                                            <option value="ECE" class="bg-gray-900">ECE</option>
+                                            <option value="CSE" class="bg-gray-900">CSE</option>
+                                            <option value="EEE" class="bg-gray-900">EEE</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Mobile
+                                            *</label>
+                                        <input type="tel" name="member3[mobileNumber]" pattern="[6-9][0-9]{9}"
+                                            class="input-glass w-full px-4 py-2 rounded-lg" disabled>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Email
+                                        *</label>
+                                    <input type="email" name="member3[email]"
+                                        class="input-glass w-full px-4 py-2 rounded-lg" disabled>
+                                </div>
+                                <div class="bg-blue-900/20 p-3 rounded-lg border border-blue-800">
+                                    <label class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 cursor-pointer">
+                                        <span class="text-sm text-gray-400">IEEE Member?</span>
+                                        <div class="flex items-center flex-wrap gap-3">
+                                            <label class="inline-flex items-center"><input type="radio"
+                                                    name="member3[isIEEEMember]" value="true"
+                                                    class="form-radio text-gray-500" disabled
+                                                    onchange="toggleIEEEField('member3')"><span
+                                                    class="ml-2 text-xs sm:text-sm text-gray-500">Yes</span></label>
+                                            <label class="inline-flex items-center"><input type="radio"
+                                                    name="member3[isIEEEMember]" value="false"
+                                                    class="form-radio text-gray-500" checked disabled
+                                                    onchange="toggleIEEEField('member3')"><span
+                                                    class="ml-2 text-xs sm:text-sm text-gray-500">No</span></label>
+                                        </div>
+                                    </label>
+                                    <div id="member3IEEE" class="hidden mt-3">
+                                        <input type="text" name="member3[ieeeMembershipNumber]"
+                                            placeholder="Membership ID"
+                                            class="input-glass w-full px-4 py-2 rounded-lg text-sm" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex flex-col-reverse sm:flex-row gap-3 sm:justify-between">
+                        <button type="button" onclick="prevStep(1)"
+                            class="text-blue-300 hover:text-white px-6 py-2 transition-colors text-center w-full sm:w-auto">Back to Team</button>
+                        <button type="button" onclick="nextStep(3)"
+                            class="btn-primary px-10 py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto">
+                            Review Details
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Review -->
+                <div id="step3"
+                    class="step-transition absolute inset-0 opacity-0 pointer-events-none z-0 translate-x-full">
+                    <div class="card-glass rounded-2xl p-8 border-t border-gold/20">
+                        <h3 class="text-2xl font-display font-bold text-gold mb-6 text-center">Confirm Registration</h3>
+
+                        <div class="bg-black/30 rounded-xl p-6 mb-6">
+                            <h4
+                                class="text-blue-300 uppercase text-xs font-bold tracking-widest mb-4 border-b border-blue-800 pb-2">
+                                Summary</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 text-sm">
+                                <div>
+                                    <span class="text-gray-400 block text-xs">Team Name</span>
+                                    <span class="text-white font-medium" id="review_teamName">-</span>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <span class="text-gray-400 block text-xs">Problem Statement</span>
+                                    <span class="text-white font-medium whitespace-normal break-words leading-relaxed" id="review_prob">-</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-400 block text-xs">College</span>
+                                    <span class="text-white font-medium" id="review_college">-</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-400 block text-xs">Team Leader</span>
+                                    <span class="text-white font-medium text-gold" id="review_tlName">-</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-400 block text-xs">Members</span>
+                                    <span class="text-white font-medium" id="review_m2Name">N/A</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-center gap-2 mb-8">
+                            <input type="checkbox" id="terms" required
+                                class="w-5 h-5 rounded border-gold bg-black/50 text-gold focus:ring-gold cursor-pointer">
+                            <label for="terms" class="text-sm text-gray-300 cursor-pointer">I confirm all details are
+                                accurate & agree to terms.</label>
+                        </div>
+
+                        <div id="uploadProgressWrap" class="hidden mb-7">
+                            <div class="upload-progress-track">
+                                <div id="uploadProgressFill" class="upload-progress-fill"></div>
+                            </div>
+                            <p id="uploadProgressText" class="field-hint text-center mt-2">Preparing upload...</p>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <button type="button" onclick="prevStep(2)"
+                                class="text-blue-300 hover:text-white px-6 py-2 transition-colors">Edit
+                                Details</button>
+                            <button type="button" onclick="submitForm()" id="submitBtn"
+                                class="bg-green-600 hover:bg-green-500 text-white font-bold px-12 py-3 rounded-xl shadow-[0_0_20px_rgba(22,163,74,0.4)] transition-all transform hover:scale-105 pulse-cta">
+                                Submit Registration
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <section id="participantTools" class="max-w-5xl mx-auto mt-12">
+            <div class="card-glass rounded-2xl p-6 md:p-8 border border-blue-500/25">
+                <h3 class="text-2xl font-display font-bold text-white mb-4">Check or Update Existing Registration</h3>
+                <p class="text-sm text-blue-100 mb-6">Use your registration ID and contact mobile number.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input id="statusRegId" type="text" placeholder="Registration ID (e.g., AU-XXXXXXX)"
+                        class="input-glass w-full px-4 py-3 rounded-xl focus:outline-none uppercase">
+                    <input id="statusMobile" type="tel" placeholder="Contact Mobile (10 digits)"
+                        class="input-glass w-full px-4 py-3 rounded-xl focus:outline-none">
+                    <button id="checkStatusBtn" type="button" onclick="checkRegistrationStatus()"
+                        class="btn-primary rounded-xl px-5 py-3">
+                        Check Status
+                    </button>
+                </div>
+
+                <div id="statusCheckResult" class="status-banner mt-5"></div>
+
+                <div id="participantEditWrap" class="hidden mt-6 border-t border-white/10 pt-5">
+                    <h4 class="text-lg font-semibold text-gold mb-4">One-time Update (Pending Registrations Only)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input id="editTeamName" type="text" placeholder="New Team Name (optional)"
+                            class="input-glass w-full px-4 py-3 rounded-xl focus:outline-none">
+                        <input id="editProblemStatement" type="text" placeholder="New Problem Statement (optional)"
+                            class="input-glass w-full px-4 py-3 rounded-xl focus:outline-none">
+                        <input id="editContactMobile" type="tel" placeholder="New Contact Mobile (optional)"
+                            class="input-glass w-full px-4 py-3 rounded-xl focus:outline-none">
+                        <select id="editYear" class="input-glass w-full px-4 py-3 rounded-xl focus:outline-none">
+                            <option value="">Update Year (optional)</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                        <select id="editDepartment" class="input-glass w-full px-4 py-3 rounded-xl focus:outline-none">
+                            <option value="">Update Department (optional)</option>
+                            <option value="CSE">CSE</option>
+                            <option value="ECE">ECE</option>
+                            <option value="EEE">EEE</option>
+                            <option value="IT">IT</option>
+                            <option value="MECH">MECH</option>
+                            <option value="CIVIL">CIVIL</option>
+                            <option value="AIDS">AIDS</option>
+                            <option value="CSBS">CSBS</option>
+                            <option value="CSD">CSD</option>
+                            <option value="OTHERS">OTHERS</option>
+                        </select>
+                        <div class="md:col-span-2">
+                            <button id="saveParticipantUpdateBtn" type="button" onclick="submitParticipantUpdate()"
+                                class="btn-primary rounded-xl px-6 py-3">
+                                Save Update
+                            </button>
+                        </div>
+                    </div>
+                    <p class="field-hint mt-3">Only one participant update is allowed while status is pending.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- About & Objectives Section -->
+    <!-- About & Objectives Section Removed -->
+
+    <!-- Contact Section -->
+    <!-- Footer Only -->
+    <div class="container mx-auto px-4 py-8">
+        <footer class="text-center mt-12 pt-8 border-t border-gray-800 text-gray-500 text-sm">
+            <p>&copy; 2026 AURION - TKR College of Engineering and Technology. All Rights Reserved.</p>
+        </footer>
+    </div>
+    <div id="successModal"
+        class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div
+            class="card-glass rounded-2xl p-10 max-w-md w-full text-center border-gold border hover:shadow-[0_0_30px_rgba(255,215,0,0.2)]">
+            <div
+                class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/50">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-3xl font-display font-bold text-gold mb-2">Success!</h3>
+            <p class="text-blue-200 mb-6">Your registration is confirmed.</p>
+            <div class="bg-black/40 p-4 rounded-lg mb-8 border border-blue-800">
+                <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Registration ID</p>
+                <p class="font-mono text-xl text-white tracking-wider" id="registrationId">#AU-0000</p>
+            </div>
+            <button onclick="window.location.reload()" class="btn-primary w-full py-3 rounded-xl text-lg">Back to
+                Home</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+        const pageHost = window.location.hostname || 'localhost';
+        const isPrivateLanHost = /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(pageHost);
+        const isLocalDevHost = pageHost === 'localhost' || pageHost === '127.0.0.1' || isPrivateLanHost;
+        const servedFromBackend = window.location.port === '5000' || window.location.port === '';
+        const backendOrigin = (!isLocalDevHost || servedFromBackend)
+            ? window.location.origin
+            : `http://${pageHost}:5000`;
+        const backendUrl = `${backendOrigin}/api`;
+        const MAX_FILE_BYTES = 10 * 1024 * 1024;
+        const ALLOWED_EXTENSIONS = ['pdf', 'ppt', 'pptx'];
+        let registrationWindowState = { isOpen: true, reason: '' };
+        let checkedRegistrationContext = null;
+        let teamNameCheckTimeout = null;
+        let teamNameCheckRequestId = 0;
+
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('formStatus');
+            if (!status) return;
+
+            status.className = `status-banner show ${type} mb-5`;
+            status.textContent = message;
+            status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function hideStatus() {
+            const status = document.getElementById('formStatus');
+            if (!status) return;
+            status.className = 'status-banner mb-5';
+            status.textContent = '';
+        }
+
+        function setTeamNameAvailability(message = '', type = 'info') {
+            const hint = document.getElementById('teamNameAvailability');
+            if (!hint) return;
+
+            hint.textContent = message;
+            hint.className = message
+                ? `field-hint field-hint-${type}`
+                : 'field-hint';
+        }
+
+        function scheduleTeamNameAvailabilityCheck() {
+            if (teamNameCheckTimeout) clearTimeout(teamNameCheckTimeout);
+            teamNameCheckTimeout = setTimeout(() => {
+                checkTeamNameAvailability(false);
+            }, 350);
+        }
+
+        async function checkTeamNameAvailability(force = false) {
+            const teamNameInput = document.getElementById('teamNameInput');
+            if (!teamNameInput) return true;
+
+            const teamName = (teamNameInput.value || '').trim();
+            if (!teamName) {
+                setTeamNameAvailability('', 'info');
+                clearFieldError(teamNameInput);
+                return true;
+            }
+
+            if (!force && teamName.length < 3) {
+                setTeamNameAvailability('Keep typing to check team name availability.', 'info');
+                return true;
+            }
+
+            const requestId = ++teamNameCheckRequestId;
+            setTeamNameAvailability('Checking team name...', 'info');
+
+            try {
+                const response = await fetch(
+                    `${backendUrl}/registrations/team-name-availability?teamName=${encodeURIComponent(teamName)}`
+                );
+                const data = await response.json().catch(() => ({}));
+
+                if (requestId !== teamNameCheckRequestId) return true;
+                if (!response.ok) {
+                    setTeamNameAvailability('', 'info');
+                    return true;
+                }
+
+                if (data.available) {
+                    clearFieldError(teamNameInput);
+                    setTeamNameAvailability('Team name is available.', 'success');
+                    return true;
+                }
+
+                setFieldError(teamNameInput, 'Team name is already taken. Please choose another team name.');
+                setTeamNameAvailability('Team name already taken. Try another name.', 'error');
+                return false;
+            } catch (_) {
+                if (requestId !== teamNameCheckRequestId) return true;
+                setTeamNameAvailability('Could not check now. You can still submit and retry if needed.', 'info');
+                return true;
+            }
+        }
+
+        function showStatusCheckResult(message, type = 'info') {
+            const panel = document.getElementById('statusCheckResult');
+            if (!panel) return;
+            panel.className = `status-banner show ${type} mt-5`;
+            panel.textContent = message;
+        }
+
+        function hideStatusCheckResult() {
+            const panel = document.getElementById('statusCheckResult');
+            if (!panel) return;
+            panel.className = 'status-banner mt-5';
+            panel.textContent = '';
+        }
+
+        function setFieldError(input, message) {
+            if (!input) return;
+            const key = input.name || input.id || 'field';
+
+            if (input.type !== 'radio' && input.type !== 'checkbox') {
+                input.classList.add('border-red-500');
+            }
+
+            const container = input.closest('div') || input.parentElement;
+            if (!container) return;
+
+            let error = [...container.querySelectorAll('.field-error[data-generated="true"]')]
+                .find(node => node.dataset.for === key);
+
+            if (!error) {
+                error = document.createElement('p');
+                error.className = 'field-error';
+                error.dataset.generated = 'true';
+                error.dataset.for = key;
+                container.appendChild(error);
+            }
+
+            error.textContent = message;
+        }
+
+        function clearFieldError(input) {
+            if (!input) return;
+            if (input.type !== 'radio' && input.type !== 'checkbox') {
+                input.classList.remove('border-red-500');
+            }
+
+            const container = input.closest('div') || input.parentElement;
+            if (!container) return;
+            container.querySelectorAll('.field-error[data-generated="true"]').forEach(node => node.remove());
+        }
+
+        function clearGeneratedErrors(scope = document) {
+            scope.querySelectorAll('.field-error[data-generated="true"]').forEach(node => node.remove());
+            scope.querySelectorAll('.border-red-500').forEach(node => node.classList.remove('border-red-500'));
+        }
+
+        function getValidationMessage(input) {
+            if (input.validity.valueMissing) return 'This field is required.';
+            if (input.validity.typeMismatch) return 'Please enter a valid value.';
+            if (input.validity.patternMismatch) {
+                if (input.type === 'tel') return 'Enter a valid 10-digit mobile number.';
+                return 'Please match the required format.';
+            }
+            return 'Please check this field.';
+        }
+
+        function validateProjectFile(file) {
+            if (!file) return 'Please upload a project file.';
+
+            const extension = (file.name.split('.').pop() || '').toLowerCase();
+            if (!ALLOWED_EXTENSIONS.includes(extension)) {
+                return 'Only PDF, PPT, or PPTX files are allowed.';
+            }
+
+            if (file.size > MAX_FILE_BYTES) {
+                return 'File size exceeds 10 MB. Please upload a smaller file.';
+            }
+
+            return '';
+        }
+
+        function handleProjectFileChange(event) {
+            const input = event?.target || document.getElementById('projectFileInput');
+            const infoNode = document.getElementById('projectFileMeta');
+            const file = input?.files?.[0];
+
+            clearFieldError(input);
+
+            if (!file) {
+                if (infoNode) infoNode.textContent = 'Accepted: PDF, PPT, PPTX. Max file size: 10 MB.';
+                return;
+            }
+
+            const fileIssue = validateProjectFile(file);
+            const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+
+            if (fileIssue) {
+                setFieldError(input, fileIssue);
+                if (infoNode) infoNode.textContent = `Selected: ${file.name} (${sizeMb} MB)`;
+                return;
+            }
+
+            if (infoNode) infoNode.textContent = `Selected: ${file.name} (${sizeMb} MB)`;
+        }
+
+        function updateUploadProgress(percent, message) {
+            const wrap = document.getElementById('uploadProgressWrap');
+            const fill = document.getElementById('uploadProgressFill');
+            const text = document.getElementById('uploadProgressText');
+            if (!wrap || !fill || !text) return;
+
+            wrap.classList.remove('hidden');
+            fill.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+            text.textContent = message || `Uploading... ${Math.round(percent)}%`;
+        }
+
+        function resetUploadProgress() {
+            const wrap = document.getElementById('uploadProgressWrap');
+            const fill = document.getElementById('uploadProgressFill');
+            const text = document.getElementById('uploadProgressText');
+            if (!wrap || !fill || !text) return;
+
+            wrap.classList.add('hidden');
+            fill.style.width = '0%';
+            text.textContent = 'Preparing upload...';
+        }
+
+        async function loadRegistrationWindowState() {
+            try {
+                const response = await fetch(`${backendUrl}/registration/config`);
+                if (!response.ok) return;
+                const data = await response.json();
+                registrationWindowState = data.registrationWindow || { isOpen: true };
+                if (!registrationWindowState.isOpen) {
+                    const reason = registrationWindowState.reason || 'Registration is currently closed.';
+                    showStatus(reason, 'error');
+                }
+            } catch (_) {
+                // Ignore config fetch errors to avoid blocking form in local/offline mode.
+            }
+        }
+
+        async function checkRegistrationStatus() {
+            const regId = (document.getElementById('statusRegId')?.value || '').trim().toUpperCase();
+            const mobile = (document.getElementById('statusMobile')?.value || '').trim();
+            const button = document.getElementById('checkStatusBtn');
+
+            if (!regId || !/^[6-9]\d{9}$/.test(mobile)) {
+                showStatusCheckResult('Enter valid registration ID and 10-digit contact mobile.', 'error');
+                return;
+            }
+
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Checking...';
+            hideStatusCheckResult();
+            checkedRegistrationContext = null;
+            document.getElementById('participantEditWrap').classList.add('hidden');
+
+            try {
+                const response = await fetch(`${backendUrl}/registrations/status-check`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ registrationId: regId, contactMobile: mobile })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Status check failed');
+
+                checkedRegistrationContext = {
+                    registrationId: data.registration?.registrationId,
+                    authMobile: mobile,
+                    canEdit: Boolean(data.participantEdits?.canEdit)
+                };
+
+                const updateInfo = data.participantEdits
+                    ? `Updates left: ${data.participantEdits.remaining}/${data.participantEdits.limit}.`
+                    : '';
+                const note = data.registration?.adminNote ? ` Note: ${data.registration.adminNote}` : '';
+                showStatusCheckResult(
+                    `Team: ${data.registration.teamName} | Status: ${String(data.registration.status || '').toUpperCase()} | ${updateInfo}${note}`,
+                    'success'
+                );
+
+                if (checkedRegistrationContext.canEdit) {
+                    document.getElementById('participantEditWrap').classList.remove('hidden');
+                }
+            } catch (error) {
+                showStatusCheckResult(error.message, 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        }
+
+        async function submitParticipantUpdate() {
+            if (!checkedRegistrationContext?.registrationId) {
+                showStatusCheckResult('Check your registration status first.', 'error');
+                return;
+            }
+
+            const payload = {
+                teamName: (document.getElementById('editTeamName')?.value || '').trim(),
+                problemStatement: (document.getElementById('editProblemStatement')?.value || '').trim(),
+                contactMobile: (document.getElementById('editContactMobile')?.value || '').trim(),
+                year: document.getElementById('editYear')?.value || '',
+                department: document.getElementById('editDepartment')?.value || ''
+            };
+
+            Object.keys(payload).forEach(key => {
+                if (!payload[key]) delete payload[key];
+            });
+
+            if (!Object.keys(payload).length) {
+                showStatusCheckResult('Enter at least one field to update.', 'error');
+                return;
+            }
+
+            if (payload.contactMobile && !/^[6-9]\d{9}$/.test(payload.contactMobile)) {
+                showStatusCheckResult('New contact mobile must be a valid 10-digit number.', 'error');
+                return;
+            }
+
+            const button = document.getElementById('saveParticipantUpdateBtn');
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Saving...';
+
+            try {
+                const response = await fetch(`${backendUrl}/registrations/${encodeURIComponent(checkedRegistrationContext.registrationId)}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contactMobile: checkedRegistrationContext.authMobile,
+                        updates: payload
+                    })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || (data.details || []).join(' | ') || 'Update failed');
+
+                showStatusCheckResult(data.message || 'Registration updated successfully.', 'success');
+                document.getElementById('participantEditWrap').classList.add('hidden');
+                ['editTeamName', 'editProblemStatement', 'editContactMobile'].forEach(id => {
+                    const node = document.getElementById(id);
+                    if (node) node.value = '';
+                });
+                const yearNode = document.getElementById('editYear');
+                const deptNode = document.getElementById('editDepartment');
+                if (yearNode) yearNode.value = '';
+                if (deptNode) deptNode.value = '';
+            } catch (error) {
+                showStatusCheckResult(error.message, 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        }
+
+        function submitRegistrationWithProgress(formData) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', `${backendUrl}/register`);
+
+                xhr.upload.onprogress = (event) => {
+                    if (!event.lengthComputable) return;
+                    const percent = (event.loaded / event.total) * 100;
+                    updateUploadProgress(percent, `Uploading file... ${Math.round(percent)}%`);
+                };
+
+                xhr.onload = () => {
+                    let json = {};
+                    try {
+                        json = xhr.responseType === 'json' && xhr.response
+                            ? xhr.response
+                            : JSON.parse(xhr.responseText || '{}');
+                    } catch (error) {
+                        json = {};
+                    }
+                    resolve({
+                        ok: xhr.status >= 200 && xhr.status < 300,
+                        status: xhr.status,
+                        json
+                    });
+                };
+
+                xhr.onerror = () => reject(new Error('Network error while submitting registration.'));
+                xhr.send(formData);
+            });
+        }
+
+        function pathToInputName(path) {
+            if (!path) return '';
+            if (path === 'projectFile') return 'projectFile';
+            const parts = path.split('.');
+            return parts.map((part, index) => (index === 0 ? part : `[${part}]`)).join('');
+        }
+
+        function applyBackendErrors(errors = []) {
+            const form = document.getElementById('registrationForm');
+            if (!form || !Array.isArray(errors)) return;
+
+            errors.forEach(({ path, msg }) => {
+                const inputName = pathToInputName(path);
+                if (!inputName) return;
+
+                let field = form.elements.namedItem(inputName);
+                if (field && typeof field.length === 'number' && field[0]) {
+                    field = field[0];
+                }
+                if (!field) return;
+                setFieldError(field, msg || 'Invalid value.');
+            });
+        }
+
+        function applyDuplicateConflictErrors(duplicates = {}) {
+            const form = document.getElementById('registrationForm');
+            if (!form) return 1;
+            let targetStep = 1;
+
+            const teamNameInput = document.getElementById('teamNameInput');
+            const contactMobileInput = form.querySelector('input[name="contactMobile"]');
+
+            if (duplicates.duplicateTeamName && teamNameInput) {
+                setFieldError(teamNameInput, 'Team name is already taken. Please use a different team name.');
+                setTeamNameAvailability('Team name already taken. Try another name.', 'error');
+            }
+            if (duplicates.duplicateContactMobile && contactMobileInput) {
+                setFieldError(contactMobileInput, 'Contact mobile is already used in another registration.');
+            }
+
+            const duplicateRolls = new Set((duplicates.duplicateRolls || []).map(value => String(value || '').trim().toUpperCase()));
+            if (duplicateRolls.size) {
+                targetStep = 2;
+                form.querySelectorAll('input[name$="[rollNumber]"]').forEach((input) => {
+                    const value = String(input.value || '').trim().toUpperCase();
+                    if (duplicateRolls.has(value)) {
+                        setFieldError(input, 'This roll number is already registered.');
+                    }
+                });
+            }
+
+            const duplicateEmails = new Set((duplicates.duplicateEmails || []).map(value => String(value || '').trim().toLowerCase()));
+            if (duplicateEmails.size) {
+                targetStep = 2;
+                form.querySelectorAll('input[name$="[email]"]').forEach((input) => {
+                    const value = String(input.value || '').trim().toLowerCase();
+                    if (duplicateEmails.has(value)) {
+                        setFieldError(input, 'This email is already registered.');
+                    }
+                });
+            }
+
+            return targetStep;
+        }
+
+        function initMotion() {
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const introNodes = [
+                document.querySelector('header'),
+                document.querySelector('nav'),
+                document.querySelector('#registrationSection'),
+                document.querySelector('footer')
+            ].filter(Boolean);
+            const revealNodes = [...document.querySelectorAll('.card-glass')];
+
+            revealNodes.forEach(card => card.classList.add('lift-card'));
+
+            if (reduceMotion) {
+                [...introNodes, ...revealNodes].forEach(el => el.classList.add('reveal-in'));
+                return;
+            }
+
+            introNodes.forEach((el, index) => {
+                el.classList.add('reveal-init');
+                el.style.transitionDelay = `${80 + (index * 100)}ms`;
+                requestAnimationFrame(() => el.classList.add('reveal-in'));
+            });
+
+            revealNodes.forEach((el, index) => {
+                el.classList.add('reveal-init');
+                el.style.transitionDelay = `${Math.min((index % 6) * 50, 220)}ms`;
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('reveal-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+
+            revealNodes.forEach(el => observer.observe(el));
+        }
+
+        function updateProgress() {
+            // Update Progress Bar
+            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            // Update Indicators
+            document.querySelectorAll('.step-indicator').forEach(el => {
+                const step = parseInt(el.dataset.step);
+                const circle = el.querySelector('div');
+                const text = el.querySelector('span');
+
+                if (step <= currentStep) {
+                    circle.classList.remove('bg-gray-800', 'text-gray-500');
+                    circle.classList.add('bg-gold', 'text-black', 'border-gold');
+                    text.classList.remove('text-gray-500');
+                    text.classList.add('text-gold');
+
+                    if (step === currentStep) {
+                        circle.classList.remove('indicator-pop');
+                        void circle.offsetWidth;
+                        circle.classList.add('indicator-pop');
+                    }
+                } else {
+                    circle.classList.add('bg-gray-800', 'text-gray-500');
+                    circle.classList.remove('bg-gold', 'text-black', 'border-gold');
+                    text.classList.add('text-gray-500');
+                    text.classList.remove('text-gold');
+                }
+            });
+
+            // Show/Hide Steps with Transition
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepEl = document.getElementById(`step${i}`);
+                if (i === currentStep) {
+                    stepEl.classList.remove('opacity-0', 'pointer-events-none', 'translate-x-full', '-translate-x-full');
+                    stepEl.classList.add('opacity-100', 'z-10');
+                } else if (i < currentStep) {
+                    // Past steps move left
+                    stepEl.classList.add('opacity-0', 'pointer-events-none', '-translate-x-full');
+                    stepEl.classList.remove('opacity-100', 'z-10', 'translate-x-full');
+                } else {
+                    // Future steps move right
+                    stepEl.classList.add('opacity-0', 'pointer-events-none', 'translate-x-full');
+                    stepEl.classList.remove('opacity-100', 'z-10', '-translate-x-full');
+                }
+            }
+
+            syncFormHeight();
+        }
+
+        function toggleMember2Fields() {
+            const count = parseInt(document.querySelector('select[name="numberOfParticipants"]').value || '1', 10);
+
+            const setMemberState = (memberKey, enabled) => {
+                const card = document.getElementById(`${memberKey}Card`);
+                if (!card) return;
+                const inputs = card.querySelectorAll('input, select');
+                const title = card.querySelector('h3');
+
+                if (enabled) {
+                    card.classList.remove('opacity-50', 'pointer-events-none');
+                    card.classList.remove('hidden');
+                    card.classList.add('block', 'opacity-100');
+                    title.classList.remove('text-gray-400');
+                    title.classList.add('text-gold');
+                    inputs.forEach(el => {
+                        el.disabled = false;
+                        if (
+                            el.name.includes('name') ||
+                            el.name.includes('roll') ||
+                            el.name.includes('email') ||
+                            el.name.includes('mobile') ||
+                            el.name.includes('branch')
+                        ) {
+                            el.required = true;
+                        }
+                    });
+                } else {
+                    card.classList.remove('block', 'opacity-100');
+                    card.classList.add('hidden', 'lg:block', 'opacity-50', 'pointer-events-none');
+                    title.classList.add('text-gray-400');
+                    title.classList.remove('text-gold');
+                    inputs.forEach(el => {
+                        el.disabled = true;
+                        el.required = false;
+                        if (el.type === 'radio') {
+                            if (el.value === 'false') el.checked = true;
+                        } else if (el.type !== 'checkbox') {
+                            el.value = '';
+                        }
+                    });
+                    const ieeeDiv = document.getElementById(`${memberKey}IEEE`);
+                    if (ieeeDiv) ieeeDiv.classList.add('hidden');
+                }
+            };
+
+            setMemberState('member2', count >= 2);
+            setMemberState('member3', count === 3);
+            syncFormHeight();
+        }
+
+        function toggleIEEEField(member) {
+            const isMember = document.querySelector(`input[name="${member}[isIEEEMember]"]:checked`)?.value === 'true';
+            const div = document.getElementById(`${member}IEEE`);
+            const input = div.querySelector('input');
+
+            if (isMember) {
+                div.classList.remove('hidden');
+                input.required = true;
+            } else {
+                div.classList.add('hidden');
+                input.required = false;
+                input.value = '';
+            }
+        }
+
+        function toggleCustomProblemStatement() {
+            const problemSelect = document.getElementById('problemStatement');
+            const customWrap = document.getElementById('customProblemStatementWrap');
+            const customInput = document.querySelector('input[name="customProblemStatement"]');
+
+            if (!problemSelect || !customWrap || !customInput) return;
+
+            const useCustom = problemSelect.value === '__custom__';
+            customWrap.classList.toggle('hidden', !useCustom);
+            customInput.required = useCustom;
+
+            if (!useCustom) {
+                customInput.value = '';
+                customInput.classList.remove('border-red-500');
+            }
+
+            syncFormHeight();
+        }
+
+        function getProblemStatementValue(formData) {
+            const selected = (formData.get('problemStatement') || '').trim();
+            if (selected !== '__custom__') return selected;
+            return (formData.get('customProblemStatement') || '').trim();
+        }
+
+        function syncFormHeight() {
+            const form = document.getElementById('registrationForm');
+            const activeStep = document.getElementById(`step${currentStep}`);
+            if (!form || !activeStep) return;
+
+            requestAnimationFrame(() => {
+                const stepHeight = activeStep.scrollHeight || 0;
+                const baseMinHeight = window.innerWidth <= 768 ? 680 : 500;
+                form.style.minHeight = `${Math.max(stepHeight + 24, baseMinHeight)}px`;
+            });
+        }
+
+        async function nextStep(target) {
+            if (!validateStep(currentStep)) return;
+            if (currentStep === 1) {
+                const isTeamNameAvailable = await checkTeamNameAvailability(true);
+                if (!isTeamNameAvailable) {
+                    showStatus('Team name already taken. Update it and continue.', 'error');
+                    return;
+                }
+            }
+            currentStep = target;
+            updateProgress();
+            if (target === 3) populateReview();
+        }
+
+        function prevStep(target) {
+            currentStep = target;
+            updateProgress();
+        }
+
+        function validateStep(step) {
+            const container = document.getElementById(`step${step}`);
+            const inputs = container.querySelectorAll('input:not([disabled]), select:not([disabled]), textarea:not([disabled])');
+            let valid = true;
+            const radioGroupsChecked = new Set();
+
+            clearGeneratedErrors(container);
+
+            inputs.forEach(input => {
+                if (!input.required) return;
+
+                if (input.type === 'radio') {
+                    if (radioGroupsChecked.has(input.name)) return;
+                    radioGroupsChecked.add(input.name);
+                    const group = container.querySelectorAll(`input[name="${input.name}"]:not([disabled])`);
+                    const selected = [...group].some(node => node.checked);
+                    if (!selected) {
+                        setFieldError(input, 'Please choose an option.');
+                        valid = false;
+                    }
+                    return;
+                }
+
+                if (input.type === 'checkbox') {
+                    if (!input.checked) {
+                        setFieldError(input, 'Please confirm to continue.');
+                        valid = false;
+                    }
+                    return;
+                }
+
+                if (input.type === 'file') {
+                    const file = input.files?.[0];
+                    const fileIssue = validateProjectFile(file);
+                    if (fileIssue) {
+                        setFieldError(input, fileIssue);
+                        valid = false;
+                    }
+                    return;
+                }
+
+                const value = (input.value || '').trim();
+                if (!value) {
+                    setFieldError(input, 'This field is required.');
+                    valid = false;
+                    return;
+                }
+
+                if (!input.checkValidity()) {
+                    setFieldError(input, getValidationMessage(input));
+                    valid = false;
+                }
+            });
+
+            if (!valid) {
+                showStatus('Please fix the highlighted fields before continuing.', 'error');
+            } else {
+                hideStatus();
+            }
+
+            return valid;
+        }
+
+        function populateReview() {
+            const form = document.getElementById('registrationForm');
+            const data = new FormData(form);
+            const selectedProblemStatement = getProblemStatementValue(data);
+
+            document.getElementById('review_teamName').textContent = data.get('teamName');
+            document.getElementById('review_prob').textContent = selectedProblemStatement || '-';
+            document.getElementById('review_college').textContent = data.get('collegeName') || '-';
+            document.getElementById('review_tlName').textContent = data.get('teamLeader[name]');
+
+            const count = parseInt(data.get('numberOfParticipants') || '1', 10);
+            const members = [];
+            if (count >= 2 && data.get('member2[name]')) members.push(`M2: ${data.get('member2[name]')}`);
+            if (count === 3 && data.get('member3[name]')) members.push(`M3: ${data.get('member3[name]')}`);
+            document.getElementById('review_m2Name').textContent = members.length ? members.join(' | ') : 'N/A (Solo)';
+        }
+
+        async function submitForm() {
+            if (!registrationWindowState?.isOpen) {
+                showStatus(registrationWindowState.reason || 'Registration is currently closed.', 'error');
+                return;
+            }
+
+            if (!validateStep(3)) return;
+
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.textContent;
+            btn.textContent = 'Processing...';
+            btn.disabled = true;
+
+            clearGeneratedErrors(document.getElementById('step3'));
+            hideStatus();
+
+            try {
+                const formElement = document.getElementById('registrationForm');
+                const formData = new FormData(formElement);
+                const projectFileInput = formElement.querySelector('input[name="projectFile"]');
+                const selectedProjectFile = projectFileInput?.files?.[0];
+                const termsInput = document.getElementById('terms');
+
+                if (!termsInput.checked) {
+                    setFieldError(termsInput, 'Please accept the confirmation before submitting.');
+                    showStatus('Please accept the terms confirmation to submit.', 'error');
+                    return;
+                }
+
+                const fileIssue = validateProjectFile(selectedProjectFile);
+                if (fileIssue) {
+                    setFieldError(projectFileInput, fileIssue);
+                    showStatus(fileIssue, 'error');
+                    return;
+                }
+
+                const isTeamNameAvailable = await checkTeamNameAvailability(true);
+                if (!isTeamNameAvailable) {
+                    showStatus('Team name already taken. All your entered data is still here. Update and submit again.', 'error');
+                    currentStep = 1;
+                    updateProgress();
+                    return;
+                }
+
+                showStatus('Submitting your registration. Please wait...', 'info');
+                updateUploadProgress(2, 'Preparing upload...');
+
+                const payload = {
+                    teamName: formData.get('teamName'),
+                    collegeName: formData.get('collegeName'),
+                    numberOfParticipants: parseInt(formData.get('numberOfParticipants')),
+                    problemStatement: getProblemStatementValue(formData),
+                    contactMobile: formData.get('contactMobile'),
+                    year: formData.get('year'),
+                    department: formData.get('department'),
+                    teamLeader: {
+                        name: formData.get('teamLeader[name]'),
+                        email: formData.get('teamLeader[email]'),
+                        rollNumber: formData.get('teamLeader[rollNumber]'),
+                        branch: formData.get('teamLeader[branch]'),
+                        mobileNumber: formData.get('teamLeader[mobileNumber]'),
+                        isIEEEMember: formData.get('teamLeader[isIEEEMember]') === 'true',
+                        ieeeMembershipNumber: formData.get('teamLeader[ieeeMembershipNumber]')
+                    }
+                };
+
+                if (payload.numberOfParticipants >= 2) {
+                    payload.member2 = {
+                        name: formData.get('member2[name]'),
+                        email: formData.get('member2[email]'),
+                        rollNumber: formData.get('member2[rollNumber]'),
+                        branch: formData.get('member2[branch]'),
+                        mobileNumber: formData.get('member2[mobileNumber]'),
+                        isIEEEMember: formData.get('member2[isIEEEMember]') === 'true',
+                        ieeeMembershipNumber: formData.get('member2[ieeeMembershipNumber]')
+                    };
+                }
+
+                if (payload.numberOfParticipants === 3) {
+                    payload.member3 = {
+                        name: formData.get('member3[name]'),
+                        email: formData.get('member3[email]'),
+                        rollNumber: formData.get('member3[rollNumber]'),
+                        branch: formData.get('member3[branch]'),
+                        mobileNumber: formData.get('member3[mobileNumber]'),
+                        isIEEEMember: formData.get('member3[isIEEEMember]') === 'true',
+                        ieeeMembershipNumber: formData.get('member3[ieeeMembershipNumber]')
+                    };
+                }
+
+                const requestData = new FormData();
+                requestData.append('payload', JSON.stringify(payload));
+                requestData.append('projectFile', selectedProjectFile);
+
+                const result = await submitRegistrationWithProgress(requestData);
+                const json = result.json || {};
+
+                if (result.ok) {
+                    showStatus('Registration submitted successfully.', 'success');
+                    document.getElementById('registrationId').textContent = json.registrationId || '#SUCCESS';
+                    document.getElementById('successModal').classList.remove('hidden');
+                    if (json.registrationWindow) registrationWindowState = json.registrationWindow;
+                } else {
+                    if (json.errors) {
+                        applyBackendErrors(json.errors);
+                        const message = json.errors.map(e => `${e.path}: ${e.msg}`).slice(0, 4).join(' | ');
+                        showStatus(`Validation failed: ${message}`, 'error');
+                    } else if (json.registrationWindow?.reason) {
+                        registrationWindowState = json.registrationWindow;
+                        showStatus(json.registrationWindow.reason, 'error');
+                    } else if (result.status === 409 && json.duplicates) {
+                        const targetStep = applyDuplicateConflictErrors(json.duplicates || {});
+                        const reasons = Array.isArray(json.conflictReasons) && json.conflictReasons.length
+                            ? json.conflictReasons.join(' ')
+                            : (json.error || 'Duplicate registration found.');
+                        showStatus(`${reasons} Your entered details are still available. Update and submit again.`, 'error');
+                        currentStep = targetStep;
+                        updateProgress();
+                    } else {
+                        showStatus(json.error || 'Submission failed. Please try again.', 'error');
+                    }
+                }
+
+            } catch (e) {
+                console.error(e);
+                showStatus(`Submission error: ${e.message}`, 'error');
+            } finally {
+                resetUploadProgress();
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            initMotion();
+            loadRegistrationWindowState();
+            updateProgress();
+            toggleMember2Fields();
+            toggleCustomProblemStatement();
+            syncFormHeight();
+            window.addEventListener('resize', syncFormHeight);
+
+            document.querySelectorAll('#registrationForm input, #registrationForm select, #registrationForm textarea').forEach(field => {
+                field.addEventListener('input', () => clearFieldError(field));
+                field.addEventListener('change', () => clearFieldError(field));
+            });
+
+            const teamNameInput = document.getElementById('teamNameInput');
+            if (teamNameInput) {
+                teamNameInput.addEventListener('input', () => {
+                    setTeamNameAvailability('', 'info');
+                    scheduleTeamNameAvailabilityCheck();
+                });
+                teamNameInput.addEventListener('blur', () => {
+                    checkTeamNameAvailability(true);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
+
+

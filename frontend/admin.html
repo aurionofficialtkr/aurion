@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AURION 2K26</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#FFD700',
+                        space: '#050A18',
+                    },
+                    fontFamily: {
+                        sans: ['Rajdhani', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Table Glass Effect */
+        .table-glass {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .table-glass th {
+            background: rgba(0, 0, 0, 0.3);
+            color: #FFD700;
+        }
+
+        .table-glass td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table-glass tr:hover td {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .pager-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            #dashboard {
+                padding-left: 0.8rem;
+                padding-right: 0.8rem;
+                padding-top: 1rem;
+            }
+
+            #dashboard header h1 {
+                font-size: 1.95rem;
+                line-height: 1.1;
+            }
+
+            .admin-table-shell {
+                overflow: visible;
+            }
+
+            .admin-table-scroll {
+                overflow-x: visible;
+            }
+
+            .table-glass thead {
+                display: none;
+            }
+
+            .table-glass,
+            .table-glass tbody {
+                display: block;
+                width: 100%;
+            }
+
+            .table-glass tr {
+                display: block;
+                margin: 0.65rem;
+                border: 1px solid rgba(148, 163, 184, 0.35);
+                border-radius: 0.85rem;
+                background: rgba(2, 6, 23, 0.55);
+                overflow: hidden;
+            }
+
+            .table-glass td {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 0.75rem;
+                padding: 0.7rem 0.85rem;
+                border-bottom: 1px dashed rgba(148, 163, 184, 0.28);
+                text-align: right;
+                word-break: break-word;
+            }
+
+            .table-glass td::before {
+                content: attr(data-label);
+                color: #93c5fd;
+                font-size: 0.68rem;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                text-align: left;
+                flex: 1 1 auto;
+                margin-right: 0.4rem;
+            }
+
+            .table-glass td > * {
+                max-width: 64%;
+                overflow-wrap: anywhere;
+            }
+
+            .table-glass td[data-label="Leader"],
+            .table-glass td[data-label="Project File"],
+            .table-glass td[data-label="Actions"] {
+                display: block;
+                text-align: left;
+            }
+
+            .table-glass td[data-label="Leader"]::before,
+            .table-glass td[data-label="Project File"]::before,
+            .table-glass td[data-label="Actions"]::before {
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            .table-glass td[data-label="Leader"] > *,
+            .table-glass td[data-label="Project File"] > *,
+            .table-glass td[data-label="Actions"] > * {
+                max-width: 100%;
+            }
+
+            .table-glass td[data-label="Actions"] .space-y-2 {
+                margin-top: 0.2rem;
+            }
+
+            .table-glass td:last-child {
+                border-bottom: 0;
+            }
+
+            .table-glass td[colspan] {
+                display: block;
+                text-align: center;
+                padding: 1rem;
+            }
+
+            .table-glass td[colspan]::before {
+                content: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen font-sans text-gray-200">
+
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-[#050A18] bg-opacity-95">
+        <div class="card-glass p-6 sm:p-8 rounded-2xl w-full max-w-md mx-4 text-center border border-gold/30">
+            <h2 class="text-3xl font-display font-bold text-gold mb-6">Admin Access</h2>
+            <p class="text-gray-400 mb-6">Enter your Admin ID and Password.</p>
+            <form id="loginForm" class="space-y-4">
+                <input type="text" id="adminId" placeholder="Admin ID"
+                    class="w-full bg-black/30 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                    required>
+                <input type="password" id="adminPass" placeholder="Password"
+                    class="w-full bg-black/30 border border-gold/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                    required>
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-gold to-yellow-600 text-black font-bold py-3 rounded-lg hover:shadow-[0_0_20px_rgba(255,215,0,0.4)] transition-all transform hover:-translate-y-1">
+                    Unlock Dashboard
+                </button>
+                <p id="loginError" class="text-red-500 text-sm hidden">Invalid Credentials. Access Denied.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard (Hidden by default) -->
+    <div id="dashboard" class="hidden container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 md:mb-10 gap-4">
+            <div>
+                <h1
+                    class="text-4xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold to-white">
+                    AURION Admin
+                </h1>
+                <p class="text-blue-200">Registration Management Dashboard</p>
+            </div>
+            <div class="flex flex-col sm:flex-row sm:flex-wrap gap-2 w-full md:w-auto">
+                <button onclick="fetchRegistrations()"
+                    class="px-6 py-2 rounded-lg border border-blue-500 text-blue-400 hover:bg-blue-500/10 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                        </path>
+                    </svg>
+                    Refresh
+                </button>
+                <button onclick="exportToExcel()"
+                    class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-500 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-green-900/50 w-full sm:w-auto">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    Export Excel
+                </button>
+                <button onclick="runBackupNow()"
+                    class="px-6 py-2 rounded-lg border border-gold text-gold hover:bg-gold/10 transition-colors w-full sm:w-auto">
+                    Backup Now
+                </button>
+                <button onclick="logout()"
+                    class="px-6 py-2 rounded-lg border border-red-500 text-red-500 hover:bg-red-500/10 transition-colors w-full sm:w-auto">
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div class="card-glass p-6 rounded-xl border border-gold/20">
+                <h3 class="text-gray-400 text-sm uppercase tracking-wider mb-2">Total Registrations</h3>
+                <p id="totalCount" class="text-3xl sm:text-4xl font-display font-bold text-white">0</p>
+            </div>
+            <div class="card-glass p-6 rounded-xl border border-blue-500/20">
+                <h3 class="text-gray-400 text-sm uppercase tracking-wider mb-2">Filtered Result</h3>
+                <p id="filteredCount" class="text-3xl sm:text-4xl font-display font-bold text-blue-300">0</p>
+            </div>
+        </div>
+
+        <div id="adminStatus" class="status-banner mb-6" role="status" aria-live="polite"></div>
+
+        <div class="card-glass rounded-xl border border-white/10 p-3 sm:p-4 mb-6">
+            <div class="admin-toolbar">
+                <input id="searchInput" type="search" placeholder="Search team, leader, reg ID..." class="admin-input">
+                <select id="departmentFilter" class="admin-input">
+                    <option value="">All Departments</option>
+                    <option value="CSE">CSE</option>
+                    <option value="ECE">ECE</option>
+                    <option value="EEE">EEE</option>
+                    <option value="IT">IT</option>
+                    <option value="MECH">MECH</option>
+                    <option value="CIVIL">CIVIL</option>
+                    <option value="AIDS">AIDS</option>
+                    <option value="CSBS">CSBS</option>
+                    <option value="CSD">CSD</option>
+                    <option value="OTHERS">Others</option>
+                </select>
+                <select id="statusFilter" class="admin-input">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <select id="sortOrder" class="admin-input">
+                    <option value="latest">Sort: Latest First</option>
+                    <option value="oldest">Sort: Oldest First</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="card-glass rounded-xl border border-white/10 overflow-hidden admin-table-shell">
+            <div class="overflow-x-auto admin-table-scroll">
+                <table class="w-full text-left border-collapse table-glass">
+                    <thead>
+                        <tr>
+                            <th class="p-4 font-display tracking-wider">Reg ID</th>
+                            <th class="p-4 font-display tracking-wider">Team Name</th>
+                            <th class="p-4 font-display tracking-wider">College</th>
+                            <th class="p-4 font-display tracking-wider">Department</th>
+                            <th class="p-4 font-display tracking-wider">Leader</th>
+                            <th class="p-4 font-display tracking-wider">Mobile</th>
+                            <th class="p-4 font-display tracking-wider">Project File</th>
+                            <th class="p-4 font-display tracking-wider">Submission Date</th>
+                            <th class="p-4 font-display tracking-wider">Status</th>
+                            <th class="p-4 font-display tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registrationsBody" class="text-sm">
+                        <!-- Rows will be populated by JS -->
+                        <tr>
+                            <td colspan="10" class="p-8 text-center text-gray-500">Loading data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 border-t border-white/10">
+                <p id="pageInfo" class="text-xs text-gray-400">Showing 0 of 0</p>
+                <div class="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
+                    <button id="prevPageBtn" class="pager-btn px-3 py-2 rounded-md border border-white/20 text-xs hover:bg-white/5 transition-colors w-full sm:w-auto">
+                        Previous
+                    </button>
+                    <button id="nextPageBtn" class="pager-btn px-3 py-2 rounded-md border border-white/20 text-xs hover:bg-white/5 transition-colors w-full sm:w-auto">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center pb-5 text-[11px] text-gray-400/50 tracking-wide">
+        Built by Mudassir Ali &amp; Dinesh
+    </footer>
+
+    <script>
+        const pageHost = window.location.hostname || 'localhost';
+        const isPrivateLanHost = /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(pageHost);
+        const isLocalDevHost = pageHost === 'localhost' || pageHost === '127.0.0.1' || isPrivateLanHost;
+        const servedFromBackend = window.location.port === '5000' || window.location.port === '';
+        const backendOrigin = (!isLocalDevHost || servedFromBackend)
+            ? window.location.origin
+            : `http://${pageHost}:5000`;
+        const API_BASE = `${backendOrigin}/api`;
+        const BACKEND_ORIGIN = API_BASE.replace(/\/api$/, '');
+        const resolveProjectFileUrl = (url) => {
+            if (!url) return '';
+            if (/^https?:\/\//i.test(url)) return url;
+            return `${BACKEND_ORIGIN}${url}`;
+        };
+        const PAGE_SIZE = 25;
+        let authToken = localStorage.getItem('adminToken');
+        let allRegistrations = [];
+        let filteredRegistrations = [];
+        let currentPage = 1;
+        let renderFrameId = 0;
+        let searchDebounceId = 0;
+
+        const ui = {
+            loginOverlay: document.getElementById('loginOverlay'),
+            dashboard: document.getElementById('dashboard'),
+            adminStatus: document.getElementById('adminStatus'),
+            registrationsBody: document.getElementById('registrationsBody'),
+            totalCount: document.getElementById('totalCount'),
+            filteredCount: document.getElementById('filteredCount'),
+            searchInput: document.getElementById('searchInput'),
+            departmentFilter: document.getElementById('departmentFilter'),
+            statusFilter: document.getElementById('statusFilter'),
+            sortOrder: document.getElementById('sortOrder'),
+            prevPageBtn: document.getElementById('prevPageBtn'),
+            nextPageBtn: document.getElementById('nextPageBtn'),
+            pageInfo: document.getElementById('pageInfo')
+        };
+
+        function showAdminStatus(message, type = 'info', autoHide = false) {
+            const status = ui.adminStatus;
+            if (!status) return;
+
+            status.className = `status-banner show ${type} mb-6`;
+            status.textContent = message;
+
+            if (autoHide) {
+                setTimeout(() => {
+                    if (status.textContent === message) {
+                        status.className = 'status-banner mb-6';
+                        status.textContent = '';
+                    }
+                }, 2600);
+            }
+        }
+
+        function setLoadingRow(message = 'Loading data...') {
+            const tbody = ui.registrationsBody;
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="10" class="p-8 text-center text-gray-400">${message}</td></tr>`;
+            updatePaginationMeta(0, 0, 1);
+        }
+
+        function escapeHtml(value = '') {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function toDomId(value = '') {
+            return String(value).replace(/[^a-zA-Z0-9_-]/g, '_');
+        }
+
+        function normalizeRegistration(reg = {}, index = 0) {
+            const submittedTs = Date.parse(reg.submissionDate || '') || 0;
+            const statusLower = String(reg.status || 'pending').toLowerCase();
+            const registrationId = reg.registrationId || `REG-${index + 1}`;
+            return {
+                ...reg,
+                registrationId,
+                _domId: toDomId(registrationId),
+                _statusLower: statusLower,
+                _submittedTs: submittedTs,
+                _submittedDateLabel: submittedTs ? new Date(submittedTs).toLocaleDateString() : '-',
+                _searchText: [
+                    reg.registrationId,
+                    reg.teamName,
+                    reg.collegeName,
+                    reg.department,
+                    reg.year,
+                    reg.adminNote,
+                    reg.teamLeader?.name,
+                    reg.teamLeader?.email,
+                    reg.teamLeader?.mobileNumber
+                ].join(' ').toLowerCase()
+            };
+        }
+
+        function queueTableRender(registrations) {
+            if (renderFrameId) cancelAnimationFrame(renderFrameId);
+            renderFrameId = requestAnimationFrame(() => {
+                renderFrameId = 0;
+                renderTable(registrations);
+            });
+        }
+
+        function updatePaginationMeta(total, startIndex, totalPages) {
+            if (!ui.pageInfo || !ui.prevPageBtn || !ui.nextPageBtn) return;
+            if (!total) {
+                ui.pageInfo.textContent = 'Showing 0 of 0';
+                ui.prevPageBtn.disabled = true;
+                ui.nextPageBtn.disabled = true;
+                return;
+            }
+            const start = startIndex + 1;
+            const end = Math.min(startIndex + PAGE_SIZE, total);
+            ui.pageInfo.textContent = `Showing ${start}-${end} of ${total} (Page ${currentPage}/${totalPages})`;
+            ui.prevPageBtn.disabled = currentPage <= 1;
+            ui.nextPageBtn.disabled = currentPage >= totalPages;
+        }
+
+        updatePaginationMeta(0, 0, 1);
+
+        // Check Auth on Load
+        if (authToken) {
+            showDashboard();
+        }
+
+        // Login Handler
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('adminId').value;
+            const pass = document.getElementById('adminPass').value;
+            document.getElementById('loginError').classList.add('hidden');
+
+            // Create Basic Auth Token
+            const token = 'Basic ' + btoa(id + ':' + pass);
+
+            authToken = token;
+            localStorage.setItem('adminToken', token);
+
+            fetchRegistrations().then(result => {
+                if (result.success) {
+                    showDashboard(false);
+                } else {
+                    const errorMsg = document.getElementById('loginError');
+                    errorMsg.textContent = result.message || 'Access Denied.';
+                    errorMsg.classList.remove('hidden');
+                    if (result.isAuthError) {
+                        localStorage.removeItem('adminToken');
+                        authToken = null;
+                    }
+                }
+            });
+        });
+
+
+        function showDashboard(shouldFetch = true) {
+            ui.loginOverlay.classList.add('hidden');
+            ui.dashboard.classList.remove('hidden');
+            if (shouldFetch) fetchRegistrations();
+        }
+
+        async function fetchRegistrations() {
+            try {
+                setLoadingRow('Loading registrations...');
+                showAdminStatus('Refreshing registration list...', 'info');
+
+                const response = await fetch(`${API_BASE}/admin/registrations`, {
+                    headers: {
+                        'Authorization': authToken // Already contains 'Basic ' prefix
+                    }
+                });
+
+                if (response.status === 401) {
+                    throw new Error('Unauthorized');
+                }
+
+                const data = await response.json();
+                allRegistrations = (Array.isArray(data.registrations) ? data.registrations : [])
+                    .map((reg, index) => normalizeRegistration(reg, index));
+                ui.totalCount.textContent = data.pagination?.total ?? allRegistrations.length;
+                applyFilters(true);
+                showAdminStatus(`Loaded ${allRegistrations.length} registrations.`, 'success', true);
+                return { success: true };
+            } catch (error) {
+                console.error('Fetch error:', error);
+                if (error.message === 'Unauthorized') {
+                    logout();
+                    showAdminStatus('Session expired. Please login again.', 'error');
+                    return { success: false, message: 'Invalid Token. Please try again.', isAuthError: true };
+                }
+                setLoadingRow('Failed to load registrations.');
+                showAdminStatus(`Connection error: ${error.message}`, 'error');
+                return { success: false, message: 'Connection Error: ' + error.message, isAuthError: false };
+            }
+        }
+
+        function applyFilters(resetPage = false) {
+            const searchText = (ui.searchInput?.value || '').trim().toLowerCase();
+            const department = (ui.departmentFilter?.value || '').trim();
+            const status = (ui.statusFilter?.value || '').trim();
+            const sortOrder = (ui.sortOrder?.value || 'latest').trim();
+
+            const nextFiltered = [];
+            for (const reg of allRegistrations) {
+                if (department && reg.department !== department) continue;
+                if (status && reg._statusLower !== status) continue;
+                if (searchText && !reg._searchText.includes(searchText)) continue;
+                nextFiltered.push(reg);
+            }
+
+            nextFiltered.sort((a, b) => (
+                sortOrder === 'oldest'
+                    ? a._submittedTs - b._submittedTs
+                    : b._submittedTs - a._submittedTs
+            ));
+
+            filteredRegistrations = nextFiltered;
+            if (resetPage) currentPage = 1;
+            ui.filteredCount.textContent = filteredRegistrations.length;
+            renderCurrentPage();
+        }
+
+        function renderCurrentPage() {
+            const total = filteredRegistrations.length;
+            const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const startIndex = (currentPage - 1) * PAGE_SIZE;
+            const pageRegistrations = filteredRegistrations.slice(startIndex, startIndex + PAGE_SIZE);
+            updatePaginationMeta(total, startIndex, totalPages);
+            queueTableRender(pageRegistrations);
+        }
+
+        function renderTable(registrations) {
+            const tbody = ui.registrationsBody;
+            if (!registrations.length) {
+                const msg = allRegistrations.length
+                    ? 'No registrations match the selected filters.'
+                    : 'No registrations found.';
+                tbody.innerHTML = `<tr><td colspan="10" class="p-8 text-center text-gray-400">${msg}</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = registrations.map(reg => `
+                <tr class="transition-colors">
+                    <td data-label="Reg ID" class="p-4 font-mono text-xs text-gold">${escapeHtml(reg.registrationId || 'NA')}</td>
+                    <td data-label="Team Name" class="p-4 font-medium text-white break-words">${escapeHtml(reg.teamName || '-')}</td>
+                    <td data-label="College" class="p-4 text-gray-200 break-words">${escapeHtml(reg.collegeName || '-')}</td>
+                    <td data-label="Department" class="p-4">${escapeHtml(reg.department || '-')} <span class="text-xs text-gray-500 ml-1">(${escapeHtml(reg.year || '-')})</span></td>
+                    <td data-label="Leader" class="p-4">
+                        <div class="text-white">${escapeHtml(reg.teamLeader?.name || '-')}</div>
+                        <div class="text-xs text-gray-500">${escapeHtml(reg.teamLeader?.email || '-')}</div>
+                    </td>
+                    <td data-label="Mobile" class="p-4 font-mono text-blue-300">${escapeHtml(reg.teamLeader?.mobileNumber || '-')}</td>
+                    <td data-label="Project File" class="p-4">
+                        ${reg.projectFile?.url
+                            ? `<div class="flex flex-col gap-1">
+                                <a href="#" onclick="openProjectFile('${escapeHtml(reg.registrationId)}', false); return false;" class="text-gold hover:text-yellow-300 underline text-xs">View File</a>
+                                <a href="#" onclick="openProjectFile('${escapeHtml(reg.registrationId)}', true); return false;" class="text-blue-300 hover:text-blue-200 underline text-xs">Download</a>
+                               </div>`
+                            : '<span class="text-gray-500 text-xs">N/A</span>'}
+                    </td>
+                    <td data-label="Submitted" class="p-4 text-gray-400">${reg._submittedDateLabel}</td>
+                    <td data-label="Status" class="p-4">
+                        <span class="px-2 py-1 rounded text-xs font-bold uppercase ${getStatusColor(reg._statusLower)}">
+                            ${escapeHtml(reg.status || 'pending')}
+                        </span>
+                    </td>
+                    <td data-label="Actions" class="p-4 min-w-0 md:min-w-[220px]">
+                        <div class="space-y-2">
+                            <select id="status-${reg._domId}" class="admin-input text-xs py-2">
+                                <option value="pending" ${reg._statusLower === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="approved" ${reg._statusLower === 'approved' ? 'selected' : ''}>Approved</option>
+                                <option value="rejected" ${reg._statusLower === 'rejected' ? 'selected' : ''}>Rejected</option>
+                            </select>
+                            <input id="note-${reg._domId}" class="admin-input text-xs py-2" maxlength="500" placeholder="Add organizer note" value="${escapeHtml(reg.adminNote || '')}">
+                            <button id="save-${reg._domId}" onclick="updateRegistrationStatus('${escapeHtml(reg.registrationId)}', '${reg._domId}')" class="w-full px-3 py-2 text-xs rounded-md bg-gold text-black font-semibold hover:brightness-95">
+                                Save
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getStatusColor(status) {
+            switch (status) {
+                case 'approved': return 'bg-green-500/20 text-green-400 border border-green-500/50';
+                case 'rejected': return 'bg-red-500/20 text-red-400 border border-red-500/50';
+                default: return 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50';
+            }
+        }
+
+        async function openProjectFile(registrationId, asDownload = false) {
+            try {
+                const response = await fetch(
+                    `${API_BASE}/admin/registrations/${encodeURIComponent(registrationId)}/project-file?mode=proxy${asDownload ? '&download=1' : ''}`,
+                    {
+                        headers: { 'Authorization': authToken }
+                    }
+                );
+
+                if (response.status === 401) {
+                    throw new Error('Unauthorized');
+                }
+
+                if (!response.ok) {
+                    let message = 'Unable to access project file.';
+                    try {
+                        const maybeJson = await response.json();
+                        message = maybeJson.error || message;
+                    } catch (_err) {
+                        // Non-JSON error response.
+                    }
+                    throw new Error(message);
+                }
+                const blob = await response.blob();
+                const fileUrl = window.URL.createObjectURL(blob);
+                const contentDisposition = response.headers.get('Content-Disposition') || '';
+                const match = contentDisposition.match(/filename=\"?([^\";]+)\"?/i);
+                const suggestedFileName = match?.[1] || `${registrationId}-project-file`;
+
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.target = '_blank';
+                link.rel = 'noopener';
+                if (asDownload) {
+                    link.download = suggestedFileName;
+                }
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                setTimeout(() => window.URL.revokeObjectURL(fileUrl), 5000);
+            } catch (error) {
+                if (error.message === 'Unauthorized') {
+                    logout();
+                    showAdminStatus('Session expired. Please login again.', 'error');
+                    return;
+                }
+                showAdminStatus(`File access failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function exportToExcel() {
+            try {
+                showAdminStatus('Preparing Excel export...', 'info');
+                const response = await fetch(`${API_BASE}/admin/export/excel`, {
+                    headers: {
+                        'Authorization': authToken
+                    }
+                });
+
+                if (!response.ok) throw new Error('Export failed');
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'aurion_registrations.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                showAdminStatus('Excel exported successfully.', 'success', true);
+            } catch (error) {
+                showAdminStatus('Failed to export data: ' + error.message, 'error');
+            }
+        }
+
+        async function runBackupNow() {
+            try {
+                showAdminStatus('Generating backup on server...', 'info');
+                const response = await fetch(`${API_BASE}/admin/backup/run`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': authToken
+                    }
+                });
+                const json = await response.json();
+                if (!response.ok) throw new Error(json.error || 'Backup failed');
+                showAdminStatus(json.message || 'Backup generated successfully.', 'success', true);
+            } catch (error) {
+                showAdminStatus(`Backup failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function updateRegistrationStatus(registrationId, domId) {
+            const statusInput = document.getElementById(`status-${domId}`);
+            const noteInput = document.getElementById(`note-${domId}`);
+            const saveBtn = document.getElementById(`save-${domId}`);
+            if (!statusInput || !noteInput || !saveBtn) return;
+
+            saveBtn.disabled = true;
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = 'Saving...';
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/registrations/${encodeURIComponent(registrationId)}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': authToken
+                    },
+                    body: JSON.stringify({
+                        status: statusInput.value,
+                        adminNote: noteInput.value.trim()
+                    })
+                });
+
+                const json = await response.json();
+                if (!response.ok) throw new Error(json.error || 'Failed to update status');
+
+                allRegistrations = allRegistrations.map((reg, index) => (
+                    reg.registrationId === registrationId
+                        ? normalizeRegistration({
+                            ...reg,
+                            status: json.status,
+                            adminNote: json.adminNote || '',
+                            statusUpdatedAt: json.statusUpdatedAt
+                        }, index)
+                        : reg
+                ));
+                applyFilters(false);
+                showAdminStatus(`Updated ${registrationId} to ${json.status}.`, 'success', true);
+            } catch (error) {
+                showAdminStatus(`Status update failed: ${error.message}`, 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = originalText;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('adminToken');
+            authToken = null;
+            allRegistrations = [];
+            filteredRegistrations = [];
+            currentPage = 1;
+            ui.dashboard.classList.add('hidden');
+            ui.loginOverlay.classList.remove('hidden');
+            document.getElementById('adminId').value = '';
+            document.getElementById('adminPass').value = '';
+            ui.totalCount.textContent = '0';
+            ui.filteredCount.textContent = '0';
+            updatePaginationMeta(0, 0, 1);
+            setLoadingRow('Loading data...');
+        }
+
+        ui.searchInput.addEventListener('input', () => {
+            clearTimeout(searchDebounceId);
+            searchDebounceId = setTimeout(() => applyFilters(true), 180);
+        });
+        ui.departmentFilter.addEventListener('change', () => applyFilters(true));
+        ui.statusFilter.addEventListener('change', () => applyFilters(true));
+        ui.sortOrder.addEventListener('change', () => applyFilters(true));
+        ui.prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage -= 1;
+                renderCurrentPage();
+            }
+        });
+        ui.nextPageBtn.addEventListener('click', () => {
+            const totalPages = Math.max(1, Math.ceil(filteredRegistrations.length / PAGE_SIZE));
+            if (currentPage < totalPages) {
+                currentPage += 1;
+                renderCurrentPage();
+            }
+        });
+    </script>
+</body>
+
+</html>
