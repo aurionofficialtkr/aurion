@@ -1,5 +1,5 @@
 // backend/src/server.js
-require('dotenv').config({ override: true });
+require('dotenv').config();
 const express = require('express');
 const dns = require('dns');
 const mongoose = require('mongoose');
