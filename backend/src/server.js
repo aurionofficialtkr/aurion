@@ -1,5 +1,10 @@
 // backend/src/server.js
-require('dotenv').config();
+const isRailwayRuntime = Boolean(process.env.RAILWAY_PROJECT_ID || process.env.RAILWAY_SERVICE_ID);
+if (!isRailwayRuntime) {
+    require('dotenv').config();
+} else {
+    console.log('Railway runtime detected. Skipping local .env file load.');
+}
 const express = require('express');
 const dns = require('dns');
 const mongoose = require('mongoose');
@@ -1351,8 +1356,9 @@ if (fs.existsSync(frontendStaticDir)) {
     app.use(express.static(frontendStaticDir));
 }
 
-const PORT = process.env.PORT || 5000;
-const HOST = process.env.HOST || '0.0.0.0';
+const parsedPort = Number(process.env.PORT);
+const PORT = Number.isFinite(parsedPort) && parsedPort > 0 ? parsedPort : 8080;
+const HOST = '0.0.0.0';
 app.listen(PORT, HOST, () => {
     console.log(`Server running on ${HOST}:${PORT}`);
     writeDailyRegistrationBackup();
