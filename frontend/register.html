@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Register - AURION 2K26</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -185,10 +185,18 @@
                                     <label
                                         class="block text-sm font-medium text-blue-200 mb-2 uppercase tracking-wide">College
                                         Name *</label>
-                                    <input type="text" name="collegeName" required
-                                        class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all placeholder-gray-500"
-                                        placeholder="Enter your college name">
-                                    <p class="field-hint">Use official college name as per your student ID.</p>
+                                    <select id="collegeNameSelect" name="collegeName" required onchange="toggleCollegeNameOther()"
+                                        class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all cursor-pointer">
+                                        <option value="" class="bg-gray-900">Select College</option>
+                                        <option value="TKR College of Engineering and Technology" class="bg-gray-900">TKR College of Engineering and Technology</option>
+                                        <option value="__other__" class="bg-gray-900">Other</option>
+                                    </select>
+                                    <div id="collegeNameOtherWrap" class="hidden mt-3">
+                                        <input type="text" id="collegeNameOtherInput" name="collegeNameOther" disabled
+                                            class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all placeholder-gray-500"
+                                            placeholder="Enter your college name">
+                                    </div>
+                                    <p class="field-hint">Select your college. If Other, enter official college name.</p>
                                 </div>
                             </div>
 
@@ -1377,6 +1385,28 @@
             syncFormHeight();
         }
 
+        function toggleCollegeNameOther() {
+            const collegeSelect = document.getElementById('collegeNameSelect');
+            const otherWrap = document.getElementById('collegeNameOtherWrap');
+            const otherInput = document.getElementById('collegeNameOtherInput');
+            if (!collegeSelect || !otherWrap || !otherInput) return;
+
+            const isOther = collegeSelect.value === '__other__';
+            otherWrap.classList.toggle('hidden', !isOther);
+            otherInput.disabled = !isOther;
+            otherInput.required = isOther;
+            if (!isOther) otherInput.value = '';
+            syncFormHeight();
+        }
+
+        function getCollegeNameValue(formData) {
+            const selectedCollege = (formData.get('collegeName') || '').trim();
+            if (selectedCollege === '__other__') {
+                return (formData.get('collegeNameOther') || '').trim();
+            }
+            return selectedCollege;
+        }
+
         function getProblemStatementValue(formData) {
             const selected = (formData.get('problemStatement') || '').trim();
             if (selected !== '__custom__') return selected;
@@ -1484,7 +1514,7 @@
 
             document.getElementById('review_teamName').textContent = data.get('teamName');
             document.getElementById('review_prob').textContent = selectedProblemStatement || '-';
-            document.getElementById('review_college').textContent = data.get('collegeName') || '-';
+            document.getElementById('review_college').textContent = getCollegeNameValue(data) || '-';
             document.getElementById('review_tlName').textContent = data.get('teamLeader[name]');
 
             const count = parseInt(data.get('numberOfParticipants') || '1', 10);
@@ -1550,7 +1580,7 @@
 
                 const payload = {
                     teamName: formData.get('teamName'),
-                    collegeName: formData.get('collegeName'),
+                    collegeName: getCollegeNameValue(formData),
                     numberOfParticipants: parseInt(formData.get('numberOfParticipants')),
                     problemStatement: getProblemStatementValue(formData),
                     contactMobile: formData.get('contactMobile'),
@@ -1641,6 +1671,7 @@
             updateProgress();
             toggleMember2Fields();
             toggleCustomProblemStatement();
+            toggleCollegeNameOther();
             syncFormHeight();
             window.addEventListener('resize', syncFormHeight);
 
