@@ -58,7 +58,7 @@ const registrationSchema = new mongoose.Schema({
   numberOfParticipants: {
     type: Number,
     required: true,
-    enum: [1, 2, 3]
+    enum: [2, 3]
   },
 
   // Team Leader Info (Member 1)
@@ -116,6 +116,67 @@ const registrationSchema = new mongoose.Schema({
     cloudPublicId: {
       type: String,
       trim: true
+    }
+  },
+  paymentScreenshot: {
+    originalName: {
+      type: String,
+      trim: true
+    },
+    fileName: {
+      type: String,
+      trim: true
+    },
+    mimeType: {
+      type: String,
+      trim: true
+    },
+    size: {
+      type: Number
+    },
+    url: {
+      type: String,
+      trim: true
+    },
+    uploadedAt: {
+      type: Date,
+      default: Date.now
+    },
+    storageProvider: {
+      type: String,
+      enum: ['local', 'cloudinary'],
+      default: 'local'
+    },
+    cloudPublicId: {
+      type: String,
+      trim: true
+    }
+  },
+  payment: {
+    method: {
+      type: String,
+      required: true,
+      enum: ['upi', 'card', 'netbanking', 'cash', 'other']
+    },
+    transactionId: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    amount: {
+      type: Number,
+      required: true,
+      min: 1
+    },
+    currency: {
+      type: String,
+      default: 'INR',
+      trim: true,
+      uppercase: true
+    },
+    paidAt: {
+      type: Date,
+      default: Date.now
     }
   },
 

@@ -236,11 +236,10 @@
                                         class="input-glass w-full px-5 py-3 rounded-xl focus:outline-none transition-all cursor-pointer"
                                         onchange="toggleMember2Fields()">
                                         <option value="" class="bg-gray-900">Select Count</option>
-                                        <option value="1" class="bg-gray-900">1 (Solo)</option>
-                                        <option value="2" class="bg-gray-900">2 (Team)</option>
-                                        <option value="3" class="bg-gray-900">3 (Team)</option>
+                                        <option value="2" class="bg-gray-900">2 (Duo)</option>
+                                        <option value="3" class="bg-gray-900">3 (Trio)</option>
                                     </select>
-                                    <p class="field-hint">Select exactly how many members will participate.</p>
+                                    <p class="field-hint">Only duo or trio teams are allowed (no solo).</p>
                                 </div>
                                 <div>
                                     <label
@@ -645,6 +644,40 @@
                                     <span class="text-gray-400 block text-xs">Members</span>
                                     <span class="text-white font-medium" id="review_m2Name">N/A</span>
                                 </div>
+                                <div>
+                                    <span class="text-gray-400 block text-xs">Payment Method</span>
+                                    <span class="text-white font-medium" id="review_paymentMethod">-</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-400 block text-xs">Payment Amount</span>
+                                    <span class="text-white font-medium" id="review_paymentAmount">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/30 rounded-xl p-6 mb-6">
+                            <h4 class="text-blue-300 uppercase text-xs font-bold tracking-widest mb-4 border-b border-blue-800 pb-2">Registration Fee Payment</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">
+                                <div class="flex flex-col items-center sm:items-start">
+                                    <p class="text-sm text-gray-200 mb-2"><span class="text-gold font-semibold">Mandatory Fee:</span> INR 600 (Duo/Trio)</p>
+                                    <img src="img/phonepe-qr.jpeg" alt="PhonePe QR for registration fee"
+                                        class="w-56 h-56 object-contain rounded-lg border border-gold/40 bg-white p-2">
+                                    <p class="text-xs text-gray-400 mt-2">Scan with PhonePe/UPI app and complete payment before submit.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-400 text-xs mb-2">UPI Transaction ID / UTR *</label>
+                                    <input type="text" name="paymentTransactionId" required maxlength="80"
+                                        class="input-glass w-full px-4 py-3 rounded-xl focus:outline-none transition-all"
+                                        placeholder="Enter UPI UTR / transaction reference">
+                                    <label class="block text-gray-400 text-xs mt-4 mb-2">Payment Screenshot *</label>
+                                    <input type="file" id="paymentScreenshotInput" name="paymentScreenshot" required accept=".jpg,.jpeg,.png,.webp"
+                                        onchange="handlePaymentScreenshotChange(event)"
+                                        class="input-glass w-full px-4 py-3 rounded-xl focus:outline-none transition-all file:mr-4 file:rounded-lg file:border-0 file:bg-gold file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black hover:file:bg-yellow-400">
+                                    <p id="paymentScreenshotMeta" class="field-hint">Accepted: JPG, JPEG, PNG, WEBP. Max file size: 10 MB.</p>
+                                    <input type="hidden" name="paymentMethod" value="upi">
+                                    <input type="hidden" name="paymentAmount" value="600">
+                                    <p class="field-hint mt-2">Only UPI payment to the provided PhonePe QR is accepted.</p>
+                                </div>
                             </div>
                         </div>
 
@@ -799,7 +832,8 @@
             : `http://${pageHost}:5000`;
         const backendUrl = `${backendOrigin}/api`;
         const MAX_FILE_BYTES = 10 * 1024 * 1024;
-        const ALLOWED_EXTENSIONS = ['pdf', 'ppt', 'pptx'];
+        const ALLOWED_PROJECT_EXTENSIONS = ['pdf', 'ppt', 'pptx'];
+        const ALLOWED_PAYMENT_SCREENSHOT_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
         let registrationWindowState = { isOpen: true, reason: '' };
         let checkedRegistrationContext = null;
         let teamNameCheckTimeout = null;
@@ -954,12 +988,27 @@
             if (!file) return 'Please upload a project file.';
 
             const extension = (file.name.split('.').pop() || '').toLowerCase();
-            if (!ALLOWED_EXTENSIONS.includes(extension)) {
+            if (!ALLOWED_PROJECT_EXTENSIONS.includes(extension)) {
                 return 'Only PDF, PPT, or PPTX files are allowed.';
             }
 
             if (file.size > MAX_FILE_BYTES) {
                 return 'File size exceeds 10 MB. Please upload a smaller file.';
+            }
+
+            return '';
+        }
+
+        function validatePaymentScreenshot(file) {
+            if (!file) return 'Please upload a payment screenshot.';
+
+            const extension = (file.name.split('.').pop() || '').toLowerCase();
+            if (!ALLOWED_PAYMENT_SCREENSHOT_EXTENSIONS.includes(extension)) {
+                return 'Payment screenshot must be JPG, JPEG, PNG, or WEBP.';
+            }
+
+            if (file.size > MAX_FILE_BYTES) {
+                return 'Screenshot size exceeds 10 MB. Please upload a smaller file.';
             }
 
             return '';
@@ -978,6 +1027,30 @@
             }
 
             const fileIssue = validateProjectFile(file);
+            const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+
+            if (fileIssue) {
+                setFieldError(input, fileIssue);
+                if (infoNode) infoNode.textContent = `Selected: ${file.name} (${sizeMb} MB)`;
+                return;
+            }
+
+            if (infoNode) infoNode.textContent = `Selected: ${file.name} (${sizeMb} MB)`;
+        }
+
+        function handlePaymentScreenshotChange(event) {
+            const input = event?.target || document.getElementById('paymentScreenshotInput');
+            const infoNode = document.getElementById('paymentScreenshotMeta');
+            const file = input?.files?.[0];
+
+            clearFieldError(input);
+
+            if (!file) {
+                if (infoNode) infoNode.textContent = 'Accepted: JPG, JPEG, PNG, WEBP. Max file size: 10 MB.';
+                return;
+            }
+
+            const fileIssue = validatePaymentScreenshot(file);
             const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
 
             if (fileIssue) {
@@ -1176,6 +1249,7 @@
         function pathToInputName(path) {
             if (!path) return '';
             if (path === 'projectFile') return 'projectFile';
+            if (path === 'paymentScreenshot') return 'paymentScreenshot';
             const parts = path.split('.');
             return parts.map((part, index) => (index === 0 ? part : `[${part}]`)).join('');
         }
@@ -1329,7 +1403,7 @@
         }
 
         function toggleMember2Fields() {
-            const count = parseInt(document.querySelector('select[name="numberOfParticipants"]').value || '1', 10);
+            const count = parseInt(document.querySelector('select[name="numberOfParticipants"]').value || '2', 10);
 
             const setMemberState = (memberKey, enabled) => {
                 const card = document.getElementById(`${memberKey}Card`);
@@ -1505,7 +1579,9 @@
 
                 if (input.type === 'file') {
                     const file = input.files?.[0];
-                    const fileIssue = validateProjectFile(file);
+                    const fileIssue = input.name === 'paymentScreenshot'
+                        ? validatePaymentScreenshot(file)
+                        : validateProjectFile(file);
                     if (fileIssue) {
                         setFieldError(input, fileIssue);
                         valid = false;
@@ -1539,17 +1615,18 @@
             const form = document.getElementById('registrationForm');
             const data = new FormData(form);
             const selectedProblemStatement = getProblemStatementValue(data);
-
             document.getElementById('review_teamName').textContent = data.get('teamName');
             document.getElementById('review_prob').textContent = selectedProblemStatement || '-';
             document.getElementById('review_college').textContent = getCollegeNameValue(data) || '-';
             document.getElementById('review_tlName').textContent = data.get('teamLeader[name]');
 
-            const count = parseInt(data.get('numberOfParticipants') || '1', 10);
+            const count = parseInt(data.get('numberOfParticipants') || '2', 10);
             const members = [];
             if (count >= 2 && data.get('member2[name]')) members.push(`M2: ${data.get('member2[name]')}`);
             if (count === 3 && data.get('member3[name]')) members.push(`M3: ${data.get('member3[name]')}`);
-            document.getElementById('review_m2Name').textContent = members.length ? members.join(' | ') : 'N/A (Solo)';
+            document.getElementById('review_m2Name').textContent = members.length ? members.join(' | ') : '-';
+            document.getElementById('review_paymentMethod').textContent = 'UPI (PhonePe QR)';
+            document.getElementById('review_paymentAmount').textContent = 'INR 600';
         }
 
         async function submitForm() {
@@ -1573,6 +1650,8 @@
                 const formData = new FormData(formElement);
                 const projectFileInput = formElement.querySelector('input[name="projectFile"]');
                 const selectedProjectFile = projectFileInput?.files?.[0];
+                const paymentScreenshotInput = formElement.querySelector('input[name="paymentScreenshot"]');
+                const selectedPaymentScreenshot = paymentScreenshotInput?.files?.[0];
                 const termsInput = document.getElementById('terms');
                 const whatsappJoinedInput = document.getElementById('whatsappJoined');
 
@@ -1594,6 +1673,12 @@
                     showStatus(fileIssue, 'error');
                     return;
                 }
+                const screenshotIssue = validatePaymentScreenshot(selectedPaymentScreenshot);
+                if (screenshotIssue) {
+                    setFieldError(paymentScreenshotInput, screenshotIssue);
+                    showStatus(screenshotIssue, 'error');
+                    return;
+                }
 
                 const isTeamNameAvailable = await checkTeamNameAvailability(true);
                 if (!isTeamNameAvailable) {
@@ -1612,6 +1697,12 @@
                     numberOfParticipants: parseInt(formData.get('numberOfParticipants')),
                     problemStatement: getProblemStatementValue(formData),
                     contactMobile: formData.get('contactMobile'),
+                    payment: {
+                        method: formData.get('paymentMethod'),
+                        transactionId: formData.get('paymentTransactionId'),
+                        amount: Number(formData.get('paymentAmount') || 0),
+                        currency: 'INR'
+                    },
                     year: formData.get('year'),
                     department: formData.get('department'),
                     teamLeader: {
@@ -1652,6 +1743,7 @@
                 const requestData = new FormData();
                 requestData.append('payload', JSON.stringify(payload));
                 requestData.append('projectFile', selectedProjectFile);
+                requestData.append('paymentScreenshot', selectedPaymentScreenshot);
 
                 const result = await submitRegistrationWithProgress(requestData);
                 const json = result.json || {};

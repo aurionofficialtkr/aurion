@@ -176,12 +176,14 @@ if (cloudinaryEnabled) {
     console.log('Cloudinary not configured. Using local disk for project uploads.');
 }
 
-const allowedUploadExtensions = new Set(['.pdf', '.ppt', '.pptx']);
-const allowedUploadMimeTypes = new Set([
+const allowedProjectExtensions = new Set(['.pdf', '.ppt', '.pptx']);
+const allowedProjectMimeTypes = new Set([
     'application/pdf',
     'application/vnd.ms-powerpoint',
     'application/vnd.openxmlformats-officedocument.presentationml.presentation'
 ]);
+const allowedPaymentScreenshotExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp']);
+const allowedPaymentScreenshotMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
 const storage = multer.diskStorage({
     destination: (_req, _file, cb) => cb(null, registrationUploadDir),
@@ -199,20 +201,49 @@ const upload = multer({
     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
     fileFilter: (_req, file, cb) => {
         const ext = path.extname(file.originalname || '').toLowerCase();
-        if (!allowedUploadExtensions.has(ext)) {
-            cb(new Error('Only PDF, PPT, or PPTX files are allowed.'));
-            return;
-        }
-        if (file.mimetype && !allowedUploadMimeTypes.has(file.mimetype)) {
-            cb(new Error('Invalid file type. Please upload a valid PDF, PPT, or PPTX file.'));
+        if (file.fieldname === 'projectFile') {
+            if (!allowedProjectExtensions.has(ext)) {
+                cb(new Error('Project file must be PDF, PPT, or PPTX.'));
+                return;
+            }
+            if (file.mimetype && !allowedProjectMimeTypes.has(file.mimetype)) {
+                cb(new Error('Invalid project file type. Please upload a valid PDF, PPT, or PPTX file.'));
+                return;
+            }
+        } else if (file.fieldname === 'paymentScreenshot') {
+            if (!allowedPaymentScreenshotExtensions.has(ext)) {
+                cb(new Error('Payment screenshot must be JPG, JPEG, PNG, or WEBP.'));
+                return;
+            }
+            if (file.mimetype && !allowedPaymentScreenshotMimeTypes.has(file.mimetype)) {
+                cb(new Error('Invalid payment screenshot type. Please upload JPG, JPEG, PNG, or WEBP.'));
+                return;
+            }
+        } else {
+            cb(new Error('Unexpected upload field.'));
             return;
         }
         cb(null, true);
     }
 });
 
-const uploadProjectFile = (req, res, next) => {
-    upload.single('projectFile')(req, res, (err) => {
+const getUploadedFile = (req, fieldName) => {
+    const files = req.files?.[fieldName];
+    return Array.isArray(files) && files[0] ? files[0] : null;
+};
+
+const cleanupUploadedFiles = (req) => {
+    const projectFile = getUploadedFile(req, 'projectFile');
+    const paymentScreenshot = getUploadedFile(req, 'paymentScreenshot');
+    if (projectFile?.path) deleteUploadedFile(projectFile.path);
+    if (paymentScreenshot?.path) deleteUploadedFile(paymentScreenshot.path);
+};
+
+const uploadRegistrationFiles = (req, res, next) => {
+    upload.fields([
+        { name: 'projectFile', maxCount: 1 },
+        { name: 'paymentScreenshot', maxCount: 1 }
+    ])(req, res, (err) => {
         if (!err) return next();
         if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
             return res.status(400).json({ error: 'File is too large. Maximum size is 10 MB.' });
@@ -224,13 +255,13 @@ const uploadProjectFile = (req, res, next) => {
 const parseRegistrationPayload = (req, res, next) => {
     try {
         if (!req.body?.payload) {
-            if (req.file?.path) deleteUploadedFile(req.file.path);
+            cleanupUploadedFiles(req);
             return res.status(400).json({ error: 'Missing registration payload.' });
         }
         req.body = JSON.parse(req.body.payload);
         return next();
     } catch (error) {
-        if (req.file?.path) deleteUploadedFile(req.file.path);
+        cleanupUploadedFiles(req);
         return res.status(400).json({ error: 'Invalid registration payload format.' });
     }
 };
@@ -313,7 +344,7 @@ const buildRegistrationSearchQuery = ({ rolls = [], emails = [], teamName = '', 
     return query;
 };
 
-const storeProjectFile = async (file) => {
+const storeUploadedFile = async (file) => {
     if (!file) return undefined;
 
     if (cloudinaryEnabled) {
@@ -443,7 +474,7 @@ const validateRegistration = [
     body('teamName').notEmpty().trim().escape(),
     body('collegeName').notEmpty().trim().escape(),
     body('problemStatement').notEmpty().trim().escape(),
-    body('numberOfParticipants').isIn([1, 2, 3]),
+    body('numberOfParticipants').isIn([2, 3]),
     body('year').isIn(['1st Year', '2nd Year', '3rd Year', '4th Year']),
     body('department').isIn(['CSE', 'ECE', 'EEE', 'IT', 'MECH', 'CIVIL', 'AIDS', 'CSBS', 'CSD', 'OTHERS']),
     body('teamLeader.name').notEmpty().trim().escape(),
@@ -452,9 +483,18 @@ const validateRegistration = [
     body('teamLeader.branch').notEmpty().trim(),
     body('teamLeader.mobileNumber').trim().matches(/^[6-9]\d{9}$/).withMessage('Invalid Mobile Number (10 digits required)'),
     body('contactMobile').trim().matches(/^[6-9]\d{9}$/).withMessage('Invalid Contact Mobile'),
+    body('payment.method').equals('upi').withMessage('Payment method must be UPI (PhonePe QR).'),
+    body('payment.transactionId').notEmpty().trim().withMessage('Payment transaction ID is required'),
+    body('payment.amount').custom((value) => Number(value) === 600).withMessage('Registration fee is fixed at INR 600.'),
     body().custom((_, { req }) => {
-        if (!req.file) {
+        if (!getUploadedFile(req, 'projectFile')) {
             throw new Error('Project file is required (PDF/PPT/PPTX).');
+        }
+        return true;
+    }),
+    body().custom((_, { req }) => {
+        if (!getUploadedFile(req, 'paymentScreenshot')) {
+            throw new Error('Payment screenshot is required (JPG/JPEG/PNG/WEBP).');
         }
         return true;
     }),
@@ -503,21 +543,22 @@ const validateRegistration = [
 // API Routes
 
 // 1. Registration Endpoint
-app.post('/api/register', uploadProjectFile, parseRegistrationPayload, validateRegistration, async (req, res) => {
+app.post('/api/register', uploadRegistrationFiles, parseRegistrationPayload, validateRegistration, async (req, res) => {
     let storedProjectFile = null;
+    let storedPaymentScreenshot = null;
     try {
         console.log('Received registration request:', req.body);
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             console.log('Validation errors:', errors.array());
-            if (req.file?.path) deleteUploadedFile(req.file.path);
+            cleanupUploadedFiles(req);
             return res.status(400).json({ errors: errors.array() });
         }
 
         const registrationWindow = await getRegistrationWindowState();
         if (!registrationWindow.isOpen) {
-            if (req.file?.path) deleteUploadedFile(req.file.path);
+            cleanupUploadedFiles(req);
             const statusCode = registrationWindow.maxTeams && registrationWindow.remainingSlots === 0 ? 409 : 403;
             return res.status(statusCode).json({
                 error: registrationWindow.reason || 'Registration is currently closed.',
@@ -553,7 +594,7 @@ app.post('/api/register', uploadProjectFile, parseRegistrationPayload, validateR
             const conflictReasons = buildDuplicateConflictReasons(duplicateSummary);
 
             console.log('Duplicate registration found');
-            if (req.file?.path) deleteUploadedFile(req.file.path);
+            cleanupUploadedFiles(req);
             return res.status(409).json({
                 error: conflictReasons[0] || 'Duplicate registration found. Team name, contact mobile, roll number, or email already exists.',
                 registrationId: existingRegistration.registrationId,
@@ -562,7 +603,10 @@ app.post('/api/register', uploadProjectFile, parseRegistrationPayload, validateR
             });
         }
 
-        storedProjectFile = await storeProjectFile(req.file);
+        const projectFile = getUploadedFile(req, 'projectFile');
+        const paymentScreenshot = getUploadedFile(req, 'paymentScreenshot');
+        storedProjectFile = await storeUploadedFile(projectFile);
+        storedPaymentScreenshot = await storeUploadedFile(paymentScreenshot);
 
         const registrationData = {
             ...req.body,
@@ -572,7 +616,8 @@ app.post('/api/register', uploadProjectFile, parseRegistrationPayload, validateR
             statusUpdatedAt: new Date(),
             ipAddress: req.ip,
             userAgent: req.get('User-Agent'),
-            projectFile: storedProjectFile || undefined
+            projectFile: storedProjectFile || undefined,
+            paymentScreenshot: storedPaymentScreenshot || undefined
         };
 
         if (!registrationData.teamLeader.isIEEEMember) {
@@ -608,6 +653,7 @@ app.post('/api/register', uploadProjectFile, parseRegistrationPayload, validateR
             success: true,
             registrationId: savedRegistration.registrationId,
             projectFileUrl: savedRegistration.projectFile?.url || null,
+            paymentScreenshotUrl: savedRegistration.paymentScreenshot?.url || null,
             message: 'Registration successful! Confirmation email sent (if email is configured).',
             registrationWindow: await getRegistrationWindowState()
         });
@@ -615,9 +661,12 @@ app.post('/api/register', uploadProjectFile, parseRegistrationPayload, validateR
     } catch (error) {
         console.error('Registration error details:', error);
         if (error?.code === 11000) {
-            if (req.file?.path) deleteUploadedFile(req.file.path);
+            cleanupUploadedFiles(req);
             if (storedProjectFile?.storageProvider === 'cloudinary') {
                 await deleteCloudinaryFile(storedProjectFile.cloudPublicId);
+            }
+            if (storedPaymentScreenshot?.storageProvider === 'cloudinary') {
+                await deleteCloudinaryFile(storedPaymentScreenshot.cloudPublicId);
             }
             const { field, value } = getDuplicateKeyInfo(error);
             let errorMessage = 'Duplicate registration found. This data is already registered.';
@@ -628,9 +677,12 @@ app.post('/api/register', uploadProjectFile, parseRegistrationPayload, validateR
             }
             return res.status(409).json({ error: errorMessage, field, value });
         }
-        if (req.file?.path) deleteUploadedFile(req.file.path);
+        cleanupUploadedFiles(req);
         if (storedProjectFile?.storageProvider === 'cloudinary') {
             await deleteCloudinaryFile(storedProjectFile.cloudPublicId);
+        }
+        if (storedPaymentScreenshot?.storageProvider === 'cloudinary') {
+            await deleteCloudinaryFile(storedPaymentScreenshot.cloudPublicId);
         }
         res.status(500).json({ error: 'Internal server error: ' + error.message });
     }
@@ -692,8 +744,8 @@ const validateMergedPayload = (payload) => {
 
     if (!payload.teamName) errors.push('Team name is required.');
     if (!payload.problemStatement) errors.push('Problem statement is required.');
-    if (![1, 2, 3].includes(payload.numberOfParticipants)) {
-        errors.push('Number of participants must be 1, 2, or 3.');
+    if (![2, 3].includes(payload.numberOfParticipants)) {
+        errors.push('Number of participants must be 2 or 3.');
     }
     if (!allowedYears.has(payload.year)) errors.push('Year is invalid.');
     if (!allowedDepartments.has(payload.department)) errors.push('Department is invalid.');
@@ -1110,6 +1162,11 @@ const buildRegistrationExportRows = (registrations = []) => registrations.map(re
     'Problem Statement': reg.problemStatement,
     'Project File URL': reg.projectFile?.url || 'N/A',
     'Project File Storage': reg.projectFile?.storageProvider || 'N/A',
+    'Payment Screenshot URL': reg.paymentScreenshot?.url || 'N/A',
+    'Payment Method': reg.payment?.method || 'N/A',
+    'Payment Transaction ID': reg.payment?.transactionId || 'N/A',
+    'Payment Amount': Number.isFinite(reg.payment?.amount) ? reg.payment.amount : 'N/A',
+    'Payment Currency': reg.payment?.currency || 'N/A',
     'Status': reg.status,
     'Admin Note': reg.adminNote || 'N/A',
     'Submission Date': reg.submissionDate ? new Date(reg.submissionDate).toLocaleString('en-IN') : 'N/A',
@@ -1151,7 +1208,7 @@ const buildWorkbookFromRows = (rows, sheetName = 'Registrations') => {
     xlsx.utils.book_append_sheet(workbook, worksheet, sheetName);
 
     worksheet['!cols'] = [
-        { wch: 20 }, { wch: 25 }, { wch: 45 }, { wch: 45 }, { wch: 15 }, { wch: 12 }, { wch: 35 },
+        { wch: 20 }, { wch: 25 }, { wch: 45 }, { wch: 45 }, { wch: 15 }, { wch: 12 }, { wch: 16 }, { wch: 26 }, { wch: 14 }, { wch: 10 }, { wch: 35 },
         { wch: 22 }, { wch: 22 }, { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 8 }, { wch: 12 },
         { wch: 22 }, { wch: 28 }, { wch: 16 }, { wch: 10 }, { wch: 16 }, { wch: 12 }, { wch: 15 },
         { wch: 22 }, { wch: 28 }, { wch: 16 }, { wch: 10 }, { wch: 16 }, { wch: 12 }, { wch: 15 },
