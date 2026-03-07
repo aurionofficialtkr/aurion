@@ -485,7 +485,7 @@ const validateRegistration = [
     body('contactMobile').trim().matches(/^[6-9]\d{9}$/).withMessage('Invalid Contact Mobile'),
     body('payment.method').equals('upi').withMessage('Payment method must be UPI (PhonePe QR).'),
     body('payment.transactionId').notEmpty().trim().withMessage('Payment transaction ID is required'),
-    body('payment.amount').custom((value) => Number(value) === 600).withMessage('Registration fee is fixed at INR 600.'),
+    body('payment.amount').custom((value) => Number(value) === 599).withMessage('Registration fee is fixed at INR 599.'),
     body().custom((_, { req }) => {
         if (!getUploadedFile(req, 'projectFile')) {
             throw new Error('Project file is required (PDF/PPT/PPTX).');
