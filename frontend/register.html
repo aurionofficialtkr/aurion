@@ -662,6 +662,10 @@
                                     <p class="text-sm text-gray-200 mb-2"><span class="text-gold font-semibold">Mandatory Fee:</span> INR 599 (Duo/Trio)</p>
                                     <img src="img/phonepe-qr.jpeg" alt="PhonePe QR for registration fee"
                                         class="w-56 h-56 object-contain rounded-lg border border-gold/40 bg-white p-2">
+                                    <button type="button" onclick="openUpiPayment()"
+                                        class="mt-3 btn-primary px-4 py-2 rounded-lg text-sm w-full sm:w-auto">
+                                        Pay INR 599 via UPI App
+                                    </button>
                                     <p class="text-xs text-gray-400 mt-2">Scan with PhonePe/UPI app and complete payment before submit.</p>
                                 </div>
                                 <div>
@@ -834,10 +838,23 @@
         const MAX_FILE_BYTES = 10 * 1024 * 1024;
         const ALLOWED_PROJECT_EXTENSIONS = ['pdf', 'ppt', 'pptx'];
         const ALLOWED_PAYMENT_SCREENSHOT_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+        // Replace with your real UPI receiver details if needed.
+        const PAYMENT_UPI_ID = 'auriontkr@okhdfcbank';
+        const PAYMENT_PAYEE_NAME = 'AURION TKR';
+        const PAYMENT_AMOUNT = 599;
         let registrationWindowState = { isOpen: true, reason: '' };
         let checkedRegistrationContext = null;
         let teamNameCheckTimeout = null;
         let teamNameCheckRequestId = 0;
+
+        function openUpiPayment() {
+            if (!PAYMENT_UPI_ID || !PAYMENT_UPI_ID.includes('@')) {
+                showStatus('UPI payment link is not configured. Please scan the QR code.', 'error');
+                return;
+            }
+            const upiLink = `upi://pay?pa=${encodeURIComponent(PAYMENT_UPI_ID)}&pn=${encodeURIComponent(PAYMENT_PAYEE_NAME)}&am=${encodeURIComponent(String(PAYMENT_AMOUNT))}&cu=INR&tn=${encodeURIComponent('AURION Registration Fee')}`;
+            window.location.href = upiLink;
+        }
 
         function showStatus(message, type = 'info') {
             const status = document.getElementById('formStatus');
