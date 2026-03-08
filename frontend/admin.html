@@ -371,7 +371,7 @@
         function setLoadingRow(message = 'Loading data...') {
             const tbody = ui.registrationsBody;
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="10" class="p-8 text-center text-gray-400">${message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="11" class="p-8 text-center text-gray-400">${message}</td></tr>`;
             updatePaginationMeta(0, 0, 1);
         }
 
@@ -576,7 +576,7 @@
                         <div class="text-gray-400">${reg.payment?.amount ? `INR ${escapeHtml(String(reg.payment.amount))}` : 'N/A'}</div>
                         <div class="text-blue-300 font-mono">${escapeHtml(reg.payment?.transactionId || '-')}</div>
                         ${reg.paymentScreenshot?.url
-                            ? `<a href="${escapeHtml(reg.paymentScreenshot.url)}" target="_blank" rel="noopener noreferrer" class="text-gold hover:text-yellow-300 underline text-xs">View Screenshot</a>`
+                            ? `<a href="${escapeHtml(resolveProjectFileUrl(reg.paymentScreenshot.url))}" target="_blank" rel="noopener noreferrer" class="text-gold hover:text-yellow-300 underline text-xs">View Screenshot</a>`
                             : '<div class="text-gray-500">No screenshot</div>'}
                     </td>
                     <td data-label="Project File" class="p-4">
